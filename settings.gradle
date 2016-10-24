@@ -1,1 +1,7 @@
 include ':uniboot'
+include ':uni'
+include ':jwtools'
+include ':propose'
+project(':uni').projectDir = new File('../Uni/uni')
+project(':jwtools').projectDir = new File('../JwTools/jwtools')
+project(':propose').projectDir = new File('../Propose/propose')
