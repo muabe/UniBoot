@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@id/uni_boot_frame_sliding_menu_blur"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent" android:background="#77ff0000" android:alpha="0.5">
+
+    <FrameLayout
+        android:id="@id/uni_boot_frame_sliding_menu_touch_area_left"
+        android:layout_height="match_parent" android:layout_gravity="left" android:clickable="true" android:layout_width="10dp" android:background="#ff0000">
+
+    </FrameLayout>
+    <FrameLayout
+        android:id="@id/uni_boot_frame_sliding_menu_touch_area_right"
+        android:layout_height="match_parent" android:layout_gravity="right" android:clickable="true" android:layout_width="10dp" android:background="#0000ff">
+
+    </FrameLayout>
+</FrameLayout>

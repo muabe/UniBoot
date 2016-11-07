@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="uni_boot_frame_sliding_menu_blur" type="id"/>
+    <item name="uni_boot_frame_sliding_menu_touch_area_left" type="id"/>
+    <item name="uni_boot_frame_sliding_menu_touch_area_right" type="id"/>
+</resources>

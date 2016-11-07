@@ -20,7 +20,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.markjmind.propose:propose:1.1.2'
     compile project(':uni')
-    compile project(':jwtools')
-    compile project(':propose')
 }
