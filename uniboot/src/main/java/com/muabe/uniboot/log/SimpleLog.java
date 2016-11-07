@@ -1,8 +1,6 @@
-package com.muabe.uniboot.util;
+package com.muabe.uniboot.log;
 
 import android.util.Log;
-
-import com.markjmind.jwtools.log.Loger;
 
 /**
  * <br>捲土重來<br>

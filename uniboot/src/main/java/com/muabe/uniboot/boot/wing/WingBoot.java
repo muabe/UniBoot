@@ -59,7 +59,11 @@ public class WingBoot extends UniBoot {
         leftWing = new WingOption(view.left, left_touch);
         rightWing = new WingOption(view.right, right_touch);
 
+    }
 
+    public static boolean onBackPressed(Activity activity){
+        WingBoot wingBoot = WingBoot.get(activity);
+        return wingBoot.onBackPressed();
     }
 
     /************************************** End ************************************/
@@ -249,10 +253,6 @@ public class WingBoot extends UniBoot {
         }
     }
 
-    public static boolean onBackPressed(Activity activity){
-        WingBoot wingBoot = WingBoot.get(activity);
-        return wingBoot.onBackPressed();
-    }
 
     private boolean onBackPressed(){
         FragmentManager fragmentManager = activity.getFragmentManager();
