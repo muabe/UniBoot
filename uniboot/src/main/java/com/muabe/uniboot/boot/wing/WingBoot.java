@@ -3,8 +3,6 @@ package com.muabe.uniboot.boot.wing;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -59,21 +57,65 @@ public class WingBoot extends UniBoot {
         leftWing = new WingOption(view.left, left_touch);
         rightWing = new WingOption(view.right, right_touch);
 
+        addBackPressObserver(WingBoot.LEFT, new BackPressObserver() {
+            @Override
+            public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
+                if(getLeft().isOpened()){
+                    if(stackCount == 0){
+                        getLeft().close();
+                    }else{
+                        backPressAdapter.backPress();
+                    }
+                    return true;
+                }else{
+                    return false;
+                }
+
+            }
+        });
+
+        addBackPressObserver(WingBoot.RIGHT, new BackPressObserver() {
+            @Override
+            public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
+                if(getRight().isOpened()){
+                    if(stackCount == 0){
+                        getRight().close();
+                    }else{
+                        backPressAdapter.backPress();
+                    }
+                    return true;
+                }else{
+                    return false;
+                }
+
+            }
+        });
+
+        addBackPressObserver(WingBoot.HOME, new BackPressObserver() {
+            @Override
+            public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
+                if(stackCount > 0){
+                    backPressAdapter.backPress();
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
     }
 
     public static boolean onBackPressed(Activity activity){
-        WingBoot wingBoot = WingBoot.get(activity);
-        return wingBoot.onBackPressed();
+        WingBoot boot = WingBoot.get(activity);
+        return boot.onBackPressed();
     }
 
+
     /************************************** End ************************************/
-
-
     private Propose getLeftSldingAnimation() {
         final Propose propose = new Propose(view.left.getContext());
 
         ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, leftWing.getWidth() - windowSize.x).setDuration(500);
-        ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 1f, 1f).setDuration(500);
+        ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
         propose.setFlingMinAccelerator(3.0f);
 
 
@@ -118,8 +160,10 @@ public class WingBoot extends UniBoot {
                 blur.setClickable(false);
                 if(isOpen) {
                     blur.setOnTouchListener(propose);
+                    propose.motionRight.enableSingleTabUp(true);
                 }else{
                     blur.setOnTouchListener(null);
+                    propose.motionRight.enableSingleTabUp(false);
                 }
             }
         });
@@ -253,50 +297,4 @@ public class WingBoot extends UniBoot {
         }
     }
 
-
-    private boolean onBackPressed(){
-        FragmentManager fragmentManager = activity.getFragmentManager();
-        String leftTag = FragmentBuilder.getDefalutStack(WingBoot.LEFT);
-        String rightTag = FragmentBuilder.getDefalutStack(WingBoot.RIGHT);
-        String homeTag = FragmentBuilder.getDefalutStack(WingBoot.HOME);
-        int leftSize = getBackStackEntryCount(fragmentManager, leftTag);
-        int rightSize = getBackStackEntryCount(fragmentManager, rightTag);
-        int homeSize = getBackStackEntryCount(fragmentManager, homeTag);
-        Log.e("sdf",leftTag+":"+leftSize);
-        Log.e("sdf",homeTag+":"+homeSize);
-        if(getLeft().isOpened()){
-            if(leftSize == 0){
-                getLeft().close();
-            }else{
-                //TODO getCurrentFragment.onbackpressed
-                fragmentManager.popBackStackImmediate(leftTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-        }else if(getRight().isOpened()){
-            if(rightSize == 0){
-                getRight().close();
-            }else{
-                //TODO getCurrentFragment.onbackpressed
-                fragmentManager.popBackStackImmediate(rightTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-        }else if(homeSize > 0){
-            //TODO getCurrentFragment.onbackpressed
-            fragmentManager.popBackStackImmediate(homeTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }else{
-            return false;
-        }
-        return true;
-    }
-
-    private int getBackStackEntryCount(FragmentManager fragmentManager, String tag) {
-        int count = 0;
-        int size = fragmentManager.getBackStackEntryCount();
-        for ( int entry = 0; entry < size; entry++ ) {
-            String name = fragmentManager.getBackStackEntryAt(entry).getName();
-            Log.i("dd",tag+":"+name+" "+(entry+1)+"/"+size);
-            if ( tag.equals(name) ){
-                count++;
-            }
-        }
-        return count;
-    }
 }

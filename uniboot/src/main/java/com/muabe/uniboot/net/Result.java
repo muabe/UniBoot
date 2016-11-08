@@ -2,7 +2,7 @@ package com.muabe.uniboot.net;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.markjmind.jwtools.util.JwJSONReader;
+import com.muabe.uniboot.util.JwJSONReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
