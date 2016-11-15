@@ -26,4 +26,5 @@ dependencies {
 
     compile 'com.markjmind.propose:propose:1.1.2'
     compile project(':uni')
+    compile 'org.jetbrains:annotations-java5:15.0'
 }

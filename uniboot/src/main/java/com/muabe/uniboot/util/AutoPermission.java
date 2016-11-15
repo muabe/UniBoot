@@ -5,6 +5,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
 /**
  * <br>捲土重來<br>
  *
@@ -15,21 +19,21 @@ import android.content.pm.PermissionInfo;
 
 public class AutoPermission {
 
-    public void check(Context context){
+    public ArrayList<String> getNames(Context context, @NotNull int... levels){
+        ArrayList<String> list = new ArrayList<>();
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = null;
         try {
             packageInfo = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
 
-            for (String permission : packageInfo.requestedPermissions) {
+            for (String permissionName : packageInfo.requestedPermissions) {
                 try {
-                    PermissionInfo pinfo = packageManager.getPermissionInfo(permission, PackageManager.GET_META_DATA);
-                    String protectionLevel;
-                    switch(pinfo.protectionLevel) {
-                        case PermissionInfo.PROTECTION_NORMAL : protectionLevel = "normal"; break;
-                        case PermissionInfo.PROTECTION_DANGEROUS : protectionLevel = "dangerous"; break;
-                        case PermissionInfo.PROTECTION_SIGNATURE : protectionLevel = "signature"; break;
-                        default : protectionLevel = "<unknown>"; break;
+                    PermissionInfo pinfo = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
+                    for (int level : levels) {
+                        if (pinfo.protectionLevel == level) {
+                            list.add(permissionName);
+                            break;
+                        }
                     }
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
@@ -37,6 +41,46 @@ public class AutoPermission {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            return null;
         }
+        return list;
+    }
+
+    public ArrayList<PermissionInfo> getAllPermission(Context context){
+        ArrayList<PermissionInfo> list = new ArrayList<>();
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+
+            for (String permissionName : packageInfo.requestedPermissions) {
+                try {
+                    PermissionInfo pinfo = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
+                    list.add(pinfo);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return list;
+    }
+
+    public ArrayList<String> getDangerous(Context context){
+        return getNames(context, PermissionInfo.PROTECTION_DANGEROUS);
+    }
+
+    public ArrayList<String> getNormal(Context context){
+        return getNames(context, PermissionInfo.PROTECTION_NORMAL);
+    }
+
+    public ArrayList<String> getSignature(Context context){
+        return getNames(context, PermissionInfo.PROTECTION_SIGNATURE);
+    }
+
+    public void checkDangerous(Context context){
+
     }
 }
