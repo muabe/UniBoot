@@ -1,17 +1,15 @@
 package com.muabe.uniboot.util;
 
-import android.text.TextUtils;
-
 public class JwTextUtils{
 
-	public static String getEmpty(String str, String emptyString){
+	public static String optEmpty(String str, String emptyString){
 		if(str==null || str.length()==0){
 			return emptyString;
 		}
 		return str;	
 	}
 	
-	public static String getNull(String str, String nullString){
+	public static String optNull(String str, String nullString){
 		if(str==null){
 			return nullString;
 		}

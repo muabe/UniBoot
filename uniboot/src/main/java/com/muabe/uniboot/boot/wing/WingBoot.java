@@ -174,6 +174,8 @@ public class WingBoot extends UniBoot {
 
     public WingBoot setHomeFragment(UniFragment uniFragment){
         FragmentBuilder.getBuilder(activity)
+                .setHistory(false)
+                .setAllowingStateLoss(true)
                 .replace(WingBoot.HOME, uniFragment);
         return this;
     }
@@ -182,6 +184,8 @@ public class WingBoot extends UniBoot {
         leftWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
         leftWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
+                .setHistory(false)
+                .setAllowingStateLoss(true)
                 .replace(WingBoot.LEFT, uniFragment);
         return this;
     }
@@ -194,6 +198,8 @@ public class WingBoot extends UniBoot {
         rightWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
         rightWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
+                .setHistory(false)
+                .setAllowingStateLoss(true)
                 .replace(WingBoot.RIGHT, uniFragment);
         return this;
     }

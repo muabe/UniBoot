@@ -70,13 +70,13 @@ public class Result extends ResultAdapter{
         if(jsonObject==null){
             return null;
         }
-        Gson gson = OkWeb.getReponseGson();
+        Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(jsonObject.toString(), dtoClass);
         return result;
     }
 
     public <Dto>Dto fromJson(Class<Dto> dtoClass, JSONObject json){
-        Gson gson = OkWeb.getReponseGson();
+        Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(json.toString(), dtoClass);
         return result;
     }
@@ -86,7 +86,7 @@ public class Result extends ResultAdapter{
         if(jsonObject==null){
             return null;
         }
-        Gson gson = OkWeb.getReponseGson();
+        Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(jsonObject.toString(), typeToken.getType());
         return result;
     }
@@ -107,7 +107,7 @@ public class Result extends ResultAdapter{
     }
 
     public <Dto>Dto getModel(Class<Dto> dtoClass, JSONObject json){
-        Gson gson = OkWeb.getReponseGson();
+        Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(json.toString(), dtoClass);
         return fromJson(dtoClass, json);
     }

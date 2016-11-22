@@ -55,7 +55,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * Created by codemasta on 2015-09-14.
  */
-public class OkWeb{
+public class JsonWeb {
     private String urlEncoding = "UTF-8";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType MEDIA_TYPE_IMAGE = MediaType.parse("application/octet-stream");
@@ -74,7 +74,7 @@ public class OkWeb{
     }
 
 
-    public OkWeb(String host) {
+    public JsonWeb(String host) {
         client = new OkHttpClient();
         header = new HashMap<>();
         param = new HashMap<>();
@@ -84,7 +84,7 @@ public class OkWeb{
         this.setHost(host);
     }
 
-    public OkWeb setDebug(boolean debug) {
+    public JsonWeb setDebug(boolean debug) {
         this.debug = debug;
         return this;
     }
@@ -111,7 +111,7 @@ public class OkWeb{
         return file;
     }
 
-    public OkWeb setTimeOut(int seconds){
+    public JsonWeb setTimeOut(int seconds){
         client.setConnectTimeout(seconds, TimeUnit.SECONDS); // connect timeout
         client.setReadTimeout(seconds, TimeUnit.SECONDS);
         return this;
@@ -396,12 +396,12 @@ public class OkWeb{
         }
     }
 
-    public OkWeb setHost(String host) {
+    public JsonWeb setHost(String host) {
         this.host = host;
         return this;
     }
 
-    public OkWeb setUri(String uri){
+    public JsonWeb setUri(String uri){
         if(uri!=null) {
             this.uri = uri;
         }
@@ -412,7 +412,7 @@ public class OkWeb{
         return new URL(new URL(host), uri).toString()+ paramString;
     }
 
-    public OkWeb setParamEncoding(String charSet){
+    public JsonWeb setParamEncoding(String charSet){
         this.urlEncoding = charSet;
         return this;
     }
@@ -425,33 +425,33 @@ public class OkWeb{
         }
     }
 
-    public OkWeb clearHeader() {
+    public JsonWeb clearHeader() {
         header.clear();
         return this;
     }
 
-    public OkWeb addHeader(String key, String value) {
+    public JsonWeb addHeader(String key, String value) {
         header.put(key, value);
         return this;
     }
 
-    public OkWeb removeHeader(String key){
+    public JsonWeb removeHeader(String key){
         header.remove(key);
         return this;
     }
 
 
-    public OkWeb clearParam() {
+    public JsonWeb clearParam() {
         param.clear();
         return this;
     }
 
-    public OkWeb addParam(String key, String value) {
+    public JsonWeb addParam(String key, String value) {
         param.put(key, value);
         return this;
     }
 
-    public OkWeb removeParam(String key){
+    public JsonWeb removeParam(String key){
         param.remove(key);
         return this;
     }
@@ -467,17 +467,17 @@ public class OkWeb{
         return keys;
     }
 
-    public OkWeb clearFile() {
+    public JsonWeb clearFile() {
         file.clear();
         return this;
     }
 
-    public OkWeb addFile(String key, File value) {
+    public JsonWeb addFile(String key, File value) {
         file.put(key, value);
         return this;
     }
 
-    public OkWeb removeFile(String key){
+    public JsonWeb removeFile(String key){
         file.remove(key);
         return this;
     }
@@ -493,7 +493,7 @@ public class OkWeb{
         return keys;
     }
 
-    public OkWeb addParamString(String paramString){
+    public JsonWeb addParamString(String paramString){
         if (paramString == null) {
             paramString = "";
         } else {
@@ -510,7 +510,7 @@ public class OkWeb{
 //        uri = "";
         paramString = "";
     }
-    public OkWeb ignoreVerify() {
+    public JsonWeb ignoreVerify() {
         try {
             final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 @Override

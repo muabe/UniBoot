@@ -25,18 +25,19 @@ public class AutoPermission {
         PackageInfo packageInfo = null;
         try {
             packageInfo = packageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
-
-            for (String permissionName : packageInfo.requestedPermissions) {
-                try {
-                    PermissionInfo pinfo = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
-                    for (int level : levels) {
-                        if (pinfo.protectionLevel == level) {
-                            list.add(permissionName);
-                            break;
+            if(packageInfo.requestedPermissions!= null) {
+                for (String permissionName : packageInfo.requestedPermissions) {
+                    try {
+                        PermissionInfo pinfo = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
+                        for (int level : levels) {
+                            if (pinfo.protectionLevel == level) {
+                                list.add(permissionName);
+                                break;
+                            }
                         }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
                     }
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
                 }
             }
         } catch (PackageManager.NameNotFoundException e) {
