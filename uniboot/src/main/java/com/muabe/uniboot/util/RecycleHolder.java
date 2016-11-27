@@ -33,7 +33,7 @@ public class RecycleHolder {
 //
 //    public View getView(int id){
 //        if(views.containsKey(id)) {
-//            return views.get(id);
+//            return views.GET(id);
 //        }else{
 //            View view = finder.findViewById(id);
 //            views.put(id, view);

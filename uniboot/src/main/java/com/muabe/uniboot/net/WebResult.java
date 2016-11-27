@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * Created by markj on 2015-12-04.
  */
-public class Result extends ResultAdapter{
+public class WebResult extends WebResultAdapter {
 
-    public Result(){
+    public WebResult(){
 
     }
 
@@ -118,6 +118,10 @@ public class Result extends ResultAdapter{
 
     public <T>List<T> getModelList(Class<T> type) throws JSONException {
         return fromJsonList(type);
+    }
+
+    public boolean isSuccessful(){
+        return response.isSuccessful();
     }
 
 //    public static Gson getCustomGson(){

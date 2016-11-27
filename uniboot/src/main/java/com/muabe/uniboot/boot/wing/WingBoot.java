@@ -173,7 +173,7 @@ public class WingBoot extends UniBoot {
     }
 
     public WingBoot setHomeFragment(UniFragment uniFragment){
-        FragmentBuilder.getBuilder(activity)
+        FragmentBuilder.getBuilder(activity).clearHistory(WingBoot.HOME)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
                 .replace(WingBoot.HOME, uniFragment);

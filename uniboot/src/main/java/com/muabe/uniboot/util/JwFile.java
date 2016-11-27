@@ -244,7 +244,6 @@ public class JwFile {
 	 * Stream에 해당하는 파일을 복사한다.
 	 * @param file
 	 * @param in
-	 * @param append
 	 * @return
 	 * @throws IOException
 	 */

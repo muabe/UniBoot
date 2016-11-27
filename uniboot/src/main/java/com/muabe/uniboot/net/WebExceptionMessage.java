@@ -8,6 +8,6 @@ public abstract class WebExceptionMessage {
 
     public abstract String getExceptionMessage(Exception e);
 
-    public abstract String getCodeMessage(Result result, int code);
+    public abstract String getCodeMessage(WebResult webResult, int code);
 
 }

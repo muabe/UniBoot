@@ -117,7 +117,7 @@ public class JsonWeb {
         return this;
     }
 
-    protected <ResultType extends ResultAdapter> ResultType getResult(Response response, Class<ResultType> type) throws IOException {
+    protected <ResultType extends WebResultAdapter> ResultType getResult(Response response, Class<ResultType> type) throws IOException {
         try {
             Constructor<ResultType> constructor = type.getConstructor();
             ResultType obj = constructor.newInstance();
@@ -136,7 +136,7 @@ public class JsonWeb {
 
     }
 
-    public <ResultType extends ResultAdapter>ResultType get(Class<ResultType> resultType) throws IOException, WebException {
+    public <ResultType extends WebResultAdapter>ResultType GET(Class<ResultType> resultType) throws IOException, WebException {
         HttpUrl.Builder builder = HttpUrl.parse(getFullUrl()).newBuilder();
         String[] keys = getParamKeys();
         for (String key : keys) {
@@ -159,7 +159,9 @@ public class JsonWeb {
         return result;
     }
 
-    private <ResultType extends ResultAdapter>ResultType post(Class<ResultType> resultType, METHOD method, String text) throws IOException, WebException {
+
+
+    private <ResultType extends WebResultAdapter>ResultType POST(METHOD method, String text, Class<ResultType> resultType) throws IOException, WebException {
         Request.Builder reqestBuilder = new Request.Builder();
         addHeaderAll(reqestBuilder);
 
@@ -179,7 +181,7 @@ public class JsonWeb {
         return result;
     }
 
-    private <ResultType extends ResultAdapter>ResultType form(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
+    private <ResultType extends WebResultAdapter>ResultType FORM(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
 
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
@@ -210,54 +212,7 @@ public class JsonWeb {
         return result;
     }
 
-    public <ResultType extends ResultAdapter>ResultType form(Class<ResultType> resultType) throws WebException, IOException {
-        return form(METHOD.POST, resultType);
-    }
-
-    public <ResultType extends ResultAdapter>ResultType post(Class<ResultType> resultType, String text) throws IOException, WebException {
-        if(text==null){
-            return this.form(METHOD.POST, resultType);
-        }else{
-            return this.post(resultType, METHOD.POST, text);
-        }
-    }
-    public <ResultType extends ResultAdapter>ResultType put(Class<ResultType> resultType, String text) throws WebException, IOException {
-        if(text==null){
-            return this.form(METHOD.PUT, resultType);
-        }else{
-            return this.post(resultType, METHOD.PUT, text);
-        }
-    }
-    public <ResultType extends ResultAdapter>ResultType delete(Class<ResultType> resultType, String text) throws WebException, IOException {
-        if(text==null){
-            return this.form(METHOD.DELETE, resultType);
-        }else{
-            return this.post(resultType, METHOD.DELETE, text);
-        }
-    }
-    public <ResultType extends ResultAdapter>ResultType patch(Class<ResultType> resultType, String text) throws WebException, IOException {
-        if(text==null){
-            return this.form(METHOD.PATCH, resultType);
-        }else{
-            return this.post(resultType, METHOD.PATCH, text);
-        }
-    }
-
-    public <ResultType extends ResultAdapter>ResultType post(Class<ResultType> resultType) throws IOException, WebException {
-        return this.post(resultType, null);
-    }
-    public <ResultType extends ResultAdapter>ResultType put(Class<ResultType> resultType) throws WebException, IOException {
-        return put(resultType, null);
-    }
-    public <ResultType extends ResultAdapter>ResultType delete(Class<ResultType> resultType) throws WebException, IOException {
-        return delete(resultType, null);
-    }
-    public <ResultType extends ResultAdapter>ResultType patch(Class<ResultType> resultType) throws WebException, IOException {
-        return patch(resultType, null);
-    }
-
-
-    public <ResultType extends ResultAdapter>ResultType multipart(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
+    public <ResultType extends WebResultAdapter>ResultType MULTIPART(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
         if (method == null) {
             method = METHOD.POST;
         }
@@ -278,7 +233,7 @@ public class JsonWeb {
         String[] fileKeys = getFileKeys();
         for (String key : fileKeys) {
 //            body.addPart(
-//                    Headers.of("Content-Disposition", "form-data; name=\"" + key + "\""),
+//                    Headers.of("Content-Disposition", "FORM-data; name=\"" + key + "\""),
 //                    RequestBody.create(MEDIA_TYPE_IMAGE, file.getView(key)));
             body
                     .addFormDataPart("file", file.get(key).getName(),
@@ -296,9 +251,89 @@ public class JsonWeb {
         unexpectedCode(response, result.getBody());
         return result;
     }
-    public <ResultType extends ResultAdapter>ResultType multipart(Class<ResultType> resultType) throws WebException, IOException {
-        return this.multipart(null, resultType);
+
+
+    public <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
+        return FORM(METHOD.POST, resultType);
     }
+
+    public <ResultType extends WebResultAdapter>ResultType POST(String text, Class<ResultType> resultType) throws IOException, WebException {
+        if(text==null){
+            return this.FORM(METHOD.POST, resultType);
+        }else{
+            return this.POST(METHOD.POST, text, resultType);
+        }
+    }
+    public <ResultType extends WebResultAdapter>ResultType PUT(String text, Class<ResultType> resultType) throws WebException, IOException {
+        if(text==null){
+            return this.FORM(METHOD.PUT, resultType);
+        }else{
+            return this.POST(METHOD.PUT, text, resultType);
+        }
+    }
+    public <ResultType extends WebResultAdapter>ResultType DELETE(String text, Class<ResultType> resultType) throws WebException, IOException {
+        if(text==null){
+            return this.FORM(METHOD.DELETE, resultType);
+        }else{
+            return this.POST(METHOD.DELETE, text, resultType);
+        }
+    }
+    public <ResultType extends WebResultAdapter>ResultType PATCH(String text, Class<ResultType> resultType) throws WebException, IOException {
+        if(text==null){
+            return this.FORM(METHOD.PATCH, resultType);
+        }else{
+            return this.POST(METHOD.PATCH, text, resultType);
+        }
+    }
+
+    public <ResultType extends WebResultAdapter>ResultType POST(Class<ResultType> resultType) throws IOException, WebException {
+        return this.POST(null, resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType PUT(Class<ResultType> resultType) throws WebException, IOException {
+        return PUT(null, resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType DELETE(Class<ResultType> resultType) throws WebException, IOException {
+        return DELETE(null, resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType PATCH(Class<ResultType> resultType) throws WebException, IOException {
+        return PATCH(null, resultType);
+    }
+
+    public <ResultType extends WebResultAdapter>ResultType MULTIPART(Class<ResultType> resultType) throws WebException, IOException {
+        return this.MULTIPART(null, resultType);
+    }
+
+
+    public WebResult GET() throws IOException, WebException {
+        return GET(WebResult.class);
+    }
+
+    public WebResult FORM() throws IOException, WebException {
+        return FORM(WebResult.class);
+    }
+
+    public WebResult POST() throws IOException, WebException {
+        return POST(WebResult.class);
+    }
+
+    public WebResult PUT() throws IOException, WebException {
+        return PUT(WebResult.class);
+    }
+
+    public WebResult DELETE() throws IOException, WebException {
+        return DELETE(WebResult.class);
+    }
+
+    public WebResult PATCH() throws IOException, WebException {
+        return PATCH(WebResult.class);
+    }
+
+    public WebResult MULTIPART() throws IOException, WebException {
+        return MULTIPART(WebResult.class);
+    }
+
+
+
 
     public Request initMethod(METHOD method, Request.Builder reqestBuilder, RequestBody body) {
         Request request;
