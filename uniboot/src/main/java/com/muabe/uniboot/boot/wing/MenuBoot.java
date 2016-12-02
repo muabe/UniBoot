@@ -54,8 +54,8 @@ public class MenuBoot extends UniBoot {
         left_touch = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
         right_touch = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_right);
 
-        leftWing = new WingOption(view.left, left_touch);
-        rightWing = new WingOption(view.right, right_touch);
+        leftWing = new WingOption(view.left, left_touch, true);
+        rightWing = new WingOption(view.right, right_touch, false);
 
         addBackPressObserver(MenuBoot.LEFT, new BackPressObserver() {
             @Override
@@ -110,68 +110,6 @@ public class MenuBoot extends UniBoot {
     }
 
 
-    /************************************** End ************************************/
-    private Propose getLeftSldingAnimation() {
-        final Propose propose = new Propose(view.left.getContext());
-
-        ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, leftWing.getWidth() - windowSize.x).setDuration(500);
-        ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
-        propose.setFlingMinAccelerator(3.0f);
-
-
-
-
-        propose.motionRight.setOnMotionListener(new MotionListener() {
-            @Override
-            public void onStart(boolean isForward) {
-                if(rightWing.enable) {
-                    right_touch.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onScroll(long l, long l1, boolean b) {
-
-            }
-
-            @Override
-            public void onEnd(boolean isForward) {
-                if(!propose.motionRight.getStatus().equals(Motion.STATUS.run)){
-
-                }
-            }
-        });
-
-        propose.setOnProposeListener(new ProposeListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onScroll(int i, long l, long l1) {
-
-            }
-
-            @Override
-            public void onEnd() {
-                boolean isOpen = !(propose.motionRight.getCurrDuration()==0);
-                leftWing.setOpened(isOpen);
-                blur.setClickable(false);
-                if(isOpen) {
-                    blur.setOnTouchListener(propose);
-                    propose.motionRight.enableSingleTabUp(true);
-                }else{
-                    blur.setOnTouchListener(null);
-                    propose.motionRight.enableSingleTabUp(false);
-                }
-            }
-        });
-        propose.motionRight.play(leftSliding, leftWing.getWidth()).with(blurAnim);
-        propose.motionRight.enableSingleTabUp(false);
-        return propose;
-    }
-
     public MenuBoot initHomeFragment(UniFragment uniFragment){
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
@@ -181,8 +119,8 @@ public class MenuBoot extends UniBoot {
         return this;
     }
 
-    public MenuBoot initLeftFragment(int width_dp, UniFragment uniFragment){
-        leftWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
+    private MenuBoot initLeft(int width_dp, UniFragment uniFragment){
+        leftWing.setWidth(width_dp);
         leftWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
@@ -192,12 +130,16 @@ public class MenuBoot extends UniBoot {
         return this;
     }
 
-    public MenuBoot initLeftFragment(UniFragment uniFragment){
-        return this.initLeftFragment(windowSize.x, uniFragment);
+    public MenuBoot initLeftFragment(int width_dp, UniFragment uniFragment){
+        return initLeft((int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
     }
 
-    public MenuBoot initRightFragment(int width_dp, UniFragment uniFragment){
-        rightWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
+    public MenuBoot initLeftFragment(UniFragment uniFragment){
+        return this.initLeft(windowSize.x, uniFragment);
+    }
+
+    private MenuBoot initRight(int width_dp, UniFragment uniFragment){
+        rightWing.setWidth((int)(width_dp));
         rightWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
@@ -207,8 +149,12 @@ public class MenuBoot extends UniBoot {
         return this;
     }
 
+    public MenuBoot initRightFragment(int width_dp, UniFragment uniFragment){
+        return initRight((int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
+    }
+
     public MenuBoot initRightFragment(UniFragment uniFragment){
-        return this.initRightFragment(windowSize.x, uniFragment);
+        return this.initRight(windowSize.x, uniFragment);
     }
 
     public MenuOption getLeft(){
@@ -221,15 +167,17 @@ public class MenuBoot extends UniBoot {
 
 
     class WingOption implements MenuOption{
-        Propose propose;
+        AnimationInfo animationInfo;
         private int width;
         private boolean opened = false;
         private boolean enable = false;
         private View menu, touch;
+        private boolean isLeft;
 
-        public WingOption(View menu, View touch){
+        public WingOption(View menu, View touch, boolean isLeft){
             this.menu = menu;
             this.touch = touch;
+            this.isLeft = isLeft;
             setEnable(false);
         }
 
@@ -244,8 +192,8 @@ public class MenuBoot extends UniBoot {
             if(enable){
                 touch.setVisibility(View.VISIBLE);
                 menu.setVisibility(View.VISIBLE);
-                propose = getLeftSldingAnimation();
-                touch.setOnTouchListener(propose);
+                animationInfo = new AnimationInfo(isLeft);
+                touch.setOnTouchListener(animationInfo.propose);
             }else{
                 touch.setVisibility(View.GONE);
                 menu.setVisibility(View.GONE);
@@ -259,9 +207,9 @@ public class MenuBoot extends UniBoot {
 
         @Override
         public void open(){
-            if(propose != null){
+            if(animationInfo != null){
                 if(!isStartedAnimation()) {
-                    propose.motionRight.startAnimation();
+                    animationInfo.motion.startAnimation();
                 }
             }
         }
@@ -273,9 +221,9 @@ public class MenuBoot extends UniBoot {
 
         @Override
         public void close(){
-            if(propose != null){
+            if(animationInfo != null){
                 if(!isStartedAnimation()) {
-                    propose.motionRight.reverseAnimation();
+                    animationInfo.motion.reverseAnimation();
                     opened = false;
                 }
             }
@@ -283,7 +231,7 @@ public class MenuBoot extends UniBoot {
 
         @Override
         public boolean isStartedAnimation(){
-            return (propose!=null && propose.motionRight.getStatus().equals(Motion.STATUS.run));
+            return (animationInfo !=null && animationInfo.motion.getStatus().equals(Motion.STATUS.run));
         }
 
         protected void setOpened(boolean isOpend){
@@ -303,6 +251,144 @@ public class MenuBoot extends UniBoot {
                     right_touch.setVisibility(View.VISIBLE);
                 }
             }
+        }
+    }
+
+    public interface StateChangeListener{
+        void onOpening();
+        void onOpened();
+        void onClosing();
+        void onClosed();
+    }
+
+    private class AnimationInfo{
+        public Propose propose;
+        public Motion motion;
+
+        public AnimationInfo(boolean isLeft) {
+            if(isLeft){
+                this.propose = getLeftSldingAnimation();
+                this.motion = propose.motionRight;
+            }else {
+                this.propose = getRightSldingAnimation();
+                this.motion = propose.motionLeft;
+            }
+        }
+
+        private Propose getLeftSldingAnimation() {
+            final Propose propose = new Propose(view.left.getContext());
+
+            ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, -windowSize.x, leftWing.getWidth()-windowSize.x).setDuration(500);
+            ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
+            propose.setFlingMinAccelerator(3.0f);
+
+            propose.motionRight.setOnMotionListener(new MotionListener() {
+                @Override
+                public void onStart(boolean isForward) {
+                    if(rightWing.enable) {
+                        right_touch.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onScroll(long l, long l1, boolean b) {
+
+                }
+
+                @Override
+                public void onEnd(boolean isForward) {
+                    if(!propose.motionRight.getStatus().equals(Motion.STATUS.run)){
+
+                    }
+                }
+            });
+
+            propose.setOnProposeListener(new ProposeListener() {
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onScroll(int i, long l, long l1) {
+
+                }
+
+                @Override
+                public void onEnd() {
+                    boolean isOpen = !(propose.motionRight.getCurrDuration()==0);
+                    leftWing.setOpened(isOpen);
+                    blur.setClickable(false);
+                    if(isOpen) {
+                        blur.setOnTouchListener(propose);
+                        propose.motionRight.enableSingleTabUp(true);
+                    }else{
+                        blur.setOnTouchListener(null);
+                        propose.motionRight.enableSingleTabUp(false);
+                    }
+                }
+            });
+            propose.motionRight.play(leftSliding, leftWing.getWidth()).with(blurAnim);
+            propose.motionRight.enableSingleTabUp(false);
+            return propose;
+        }
+
+        private Propose getRightSldingAnimation() {
+            final Propose propose = new Propose(view.right.getContext());
+
+            ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.right, View.TRANSLATION_X, windowSize.x, windowSize.x-rightWing.getWidth()).setDuration(500);
+            ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
+            propose.setFlingMinAccelerator(3.0f);
+
+            propose.motionLeft.setOnMotionListener(new MotionListener() {
+                @Override
+                public void onStart(boolean isForward) {
+                    if(leftWing.enable) {
+                        left_touch.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onScroll(long l, long l1, boolean b) {
+
+                }
+
+                @Override
+                public void onEnd(boolean isForward) {
+                    if(!propose.motionLeft.getStatus().equals(Motion.STATUS.run)){
+
+                    }
+                }
+            });
+
+            propose.setOnProposeListener(new ProposeListener() {
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onScroll(int i, long l, long l1) {
+
+                }
+
+                @Override
+                public void onEnd() {
+                    boolean isOpen = !(propose.motionLeft.getCurrDuration()==0);
+                    rightWing.setOpened(isOpen);
+                    blur.setClickable(false);
+                    if(isOpen) {
+                        blur.setOnTouchListener(propose);
+                        propose.motionLeft.enableSingleTabUp(true);
+                    }else{
+                        blur.setOnTouchListener(null);
+                        propose.motionLeft.enableSingleTabUp(false);
+                    }
+                }
+            });
+            propose.motionLeft.play(leftSliding, rightWing.getWidth()).with(blurAnim);
+            propose.motionLeft.enableSingleTabUp(false);
+            return propose;
         }
     }
 
