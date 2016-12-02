@@ -19,7 +19,7 @@ import com.muabe.uniboot.R;
  * Created by MarkJ on 2016-10-29.
  */
 
-public class WingBoot extends UniBoot {
+public class MenuBoot extends UniBoot {
     public static int HOME;
     public static int LEFT;
     public static int RIGHT;
@@ -30,25 +30,25 @@ public class WingBoot extends UniBoot {
 
     /************************************** Must implement ************************************/
 
-    public static WingBoot get(Activity activity){
-        return UniBoot.get(activity, WingBoot.class);
+    public static MenuBoot get(Activity activity){
+        return UniBoot.get(activity, MenuBoot.class);
     }
 
-    public static WingBoot get(UniFragment uniFragment){
-        return UniBoot.get(uniFragment.getActivity(), WingBoot.class);
+    public static MenuBoot get(UniFragment uniFragment){
+        return UniBoot.get(uniFragment.getActivity(), MenuBoot.class);
     }
 
-    public static WingBoot putContentView(Activity activity){
-        return UniBoot.putContentView(activity, WingBoot.class);
+    public static MenuBoot putContentView(Activity activity){
+        return UniBoot.putContentView(activity, MenuBoot.class);
     }
 
 
     @Override
     public void onAttach(Activity activity) {
         setCustomLayout(R.layout.uni_boot_frame_sliding_menu_layout);
-        WingBoot.HOME = id.home;
-        WingBoot.LEFT = id.left;
-        WingBoot.RIGHT = id.right;
+        MenuBoot.HOME = id.home;
+        MenuBoot.LEFT = id.left;
+        MenuBoot.RIGHT = id.right;
 
         blur = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_blur);
         left_touch = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
@@ -57,7 +57,7 @@ public class WingBoot extends UniBoot {
         leftWing = new WingOption(view.left, left_touch);
         rightWing = new WingOption(view.right, right_touch);
 
-        addBackPressObserver(WingBoot.LEFT, new BackPressObserver() {
+        addBackPressObserver(MenuBoot.LEFT, new BackPressObserver() {
             @Override
             public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
                 if(getLeft().isOpened()){
@@ -74,7 +74,7 @@ public class WingBoot extends UniBoot {
             }
         });
 
-        addBackPressObserver(WingBoot.RIGHT, new BackPressObserver() {
+        addBackPressObserver(MenuBoot.RIGHT, new BackPressObserver() {
             @Override
             public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
                 if(getRight().isOpened()){
@@ -91,7 +91,7 @@ public class WingBoot extends UniBoot {
             }
         });
 
-        addBackPressObserver(WingBoot.HOME, new BackPressObserver() {
+        addBackPressObserver(MenuBoot.HOME, new BackPressObserver() {
             @Override
             public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
                 if(stackCount > 0){
@@ -105,7 +105,7 @@ public class WingBoot extends UniBoot {
     }
 
     public static boolean onBackPressed(Activity activity){
-        WingBoot boot = WingBoot.get(activity);
+        MenuBoot boot = MenuBoot.get(activity);
         return boot.onBackPressed();
     }
 
@@ -172,40 +172,43 @@ public class WingBoot extends UniBoot {
         return propose;
     }
 
-    public WingBoot setHomeFragment(UniFragment uniFragment){
-        FragmentBuilder.getBuilder(activity).clearHistory(WingBoot.HOME)
+    public MenuBoot initHomeFragment(UniFragment uniFragment){
+        FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
-                .replace(WingBoot.HOME, uniFragment);
+                .replace(MenuBoot.HOME, uniFragment);
+        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
         return this;
     }
 
-    public WingBoot setLeftFragment(int width_dp, UniFragment uniFragment){
+    public MenuBoot initLeftFragment(int width_dp, UniFragment uniFragment){
         leftWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
         leftWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
-                .replace(WingBoot.LEFT, uniFragment);
+                .replace(MenuBoot.LEFT, uniFragment);
+        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
         return this;
     }
 
-    public WingBoot setLeftFragment(UniFragment uniFragment){
-        return this.setLeftFragment(windowSize.x, uniFragment);
+    public MenuBoot initLeftFragment(UniFragment uniFragment){
+        return this.initLeftFragment(windowSize.x, uniFragment);
     }
 
-    public WingBoot setRightFragment(int width_dp, UniFragment uniFragment){
+    public MenuBoot initRightFragment(int width_dp, UniFragment uniFragment){
         rightWing.setWidth((int)(width_dp*activity.getResources().getDisplayMetrics().density));
         rightWing.setEnable(true);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
-                .replace(WingBoot.RIGHT, uniFragment);
+                .replace(MenuBoot.RIGHT, uniFragment);
+        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
         return this;
     }
 
-    public WingBoot setRightFragment(UniFragment uniFragment){
-        return this.setRightFragment(windowSize.x, uniFragment);
+    public MenuBoot initRightFragment(UniFragment uniFragment){
+        return this.initRightFragment(windowSize.x, uniFragment);
     }
 
     public MenuOption getLeft(){
