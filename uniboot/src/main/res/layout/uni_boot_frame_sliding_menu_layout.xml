@@ -21,7 +21,7 @@
     <FrameLayout
         android:id="@id/uni_boot_frame_sliding_menu_touch_area_right"
         android:layout_height="match_parent" android:layout_gravity="right" android:clickable="true"
-        android:layout_width="7dp">
+        android:layout_width="10dp">
 
     </FrameLayout>
 </FrameLayout>
