@@ -111,7 +111,7 @@ public class MenuBoot extends UniBoot {
 
 
     public MenuBoot initHomeFragment(UniFragment uniFragment){
-        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
+        FragmentBuilder.getBuilder(activity).popBackStackClear(MenuBoot.HOME);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
@@ -123,7 +123,7 @@ public class MenuBoot extends UniBoot {
     private MenuBoot initMenu(int menu, WingOption wing,  int width_dp, UniFragment uniFragment){
         wing.setWidth(width_dp);
         wing.setEnable(true);
-        FragmentBuilder.getBuilder(activity).clearHistory(menu);
+        FragmentBuilder.getBuilder(activity).popBackStackClear(menu);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
