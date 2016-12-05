@@ -111,50 +111,42 @@ public class MenuBoot extends UniBoot {
 
 
     public MenuBoot initHomeFragment(UniFragment uniFragment){
+        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
                 .replace(MenuBoot.HOME, uniFragment);
-        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
+
         return this;
     }
 
-    private MenuBoot initLeft(int width_dp, UniFragment uniFragment){
-        leftWing.setWidth(width_dp);
-        leftWing.setEnable(true);
+    private MenuBoot initMenu(int menu, WingOption wing,  int width_dp, UniFragment uniFragment){
+        wing.setWidth(width_dp);
+        wing.setEnable(true);
+        FragmentBuilder.getBuilder(activity).clearHistory(menu);
         FragmentBuilder.getBuilder(activity)
                 .setHistory(false)
                 .setAllowingStateLoss(true)
-                .replace(MenuBoot.LEFT, uniFragment);
-        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
+                .replace(menu, uniFragment);
         return this;
     }
 
+
     public MenuBoot initLeftFragment(int width_dp, UniFragment uniFragment){
-        return initLeft((int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
+        return initMenu(MenuBoot.LEFT, leftWing, (int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
     }
 
     public MenuBoot initLeftFragment(UniFragment uniFragment){
-        return this.initLeft(windowSize.x, uniFragment);
+        return initMenu(MenuBoot.LEFT, leftWing, windowSize.x, uniFragment);
     }
 
-    private MenuBoot initRight(int width_dp, UniFragment uniFragment){
-        rightWing.setWidth((int)(width_dp));
-        rightWing.setEnable(true);
-        FragmentBuilder.getBuilder(activity)
-                .setHistory(false)
-                .setAllowingStateLoss(true)
-                .replace(MenuBoot.RIGHT, uniFragment);
-        FragmentBuilder.getBuilder(activity).clearHistory(MenuBoot.HOME);
-        return this;
-    }
 
     public MenuBoot initRightFragment(int width_dp, UniFragment uniFragment){
-        return initRight((int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
+        return initMenu(MenuBoot.RIGHT, rightWing, (int)(width_dp*activity.getResources().getDisplayMetrics().density), uniFragment);
     }
 
     public MenuBoot initRightFragment(UniFragment uniFragment){
-        return this.initRight(windowSize.x, uniFragment);
+        return initMenu(MenuBoot.RIGHT, rightWing,windowSize.x, uniFragment);
     }
 
     public MenuOption getLeft(){
