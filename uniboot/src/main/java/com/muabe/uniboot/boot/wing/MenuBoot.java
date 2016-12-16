@@ -64,7 +64,7 @@ public class MenuBoot extends UniBoot {
                     if(stackCount == 0){
                         getLeft().close();
                     }else{
-                        backPressAdapter.backPress();
+                        backPressAdapter.backPressOfParents();
                     }
                     return true;
                 }else{
@@ -81,7 +81,7 @@ public class MenuBoot extends UniBoot {
                     if(stackCount == 0){
                         getRight().close();
                     }else{
-                        backPressAdapter.backPress();
+                        backPressAdapter.backPressOfParents();
                     }
                     return true;
                 }else{
@@ -95,7 +95,7 @@ public class MenuBoot extends UniBoot {
             @Override
             public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
                 if(stackCount > 0){
-                    backPressAdapter.backPress();
+                    backPressAdapter.backPressOfParents();
                     return true;
                 }else{
                     return false;
