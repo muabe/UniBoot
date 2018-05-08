@@ -23,8 +23,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.6.0'
     compile 'com.google.code.gson:gson:2.7'
 
-//    compile project(':uni')
+    compile project(':uni')
     compile 'org.jetbrains:annotations-java5:15.0'
-
-    compile 'com.github.muabe:Uni:v1.5.7'
 }
