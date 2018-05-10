@@ -78,6 +78,8 @@ public class JwPreference {
         return prefs.getLong(key, opt);
     }
 
-
+    public Context getContext(){
+        return this.context;
+    }
 
 }
