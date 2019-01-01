@@ -29,8 +29,9 @@ public class AutoPermission {
                 for (String permissionName : packageInfo.requestedPermissions) {
                     try {
                         PermissionInfo pinfo = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
+                        int bitLevel = pinfo.protectionLevel & PermissionInfo.PROTECTION_MASK_BASE;
                         for (int level : levels) {
-                            if (pinfo.protectionLevel == level) {
+                            if (pinfo.protectionLevel == level || bitLevel == level) {
                                 list.add(permissionName);
                                 break;
                             }
