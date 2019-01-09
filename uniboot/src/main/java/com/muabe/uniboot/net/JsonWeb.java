@@ -286,6 +286,19 @@ public class JsonWeb {
         }
     }
 
+    public <ResultType extends WebResultAdapter>ResultType POST(Object dataParam, Class<ResultType> resultType) throws IOException, WebException {
+        return this.POST(getRequestGson().toJson(dataParam), resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType PUT(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+        return this.PUT(getRequestGson().toJson(dataParam), resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType DELETE(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+        return this.DELETE(getRequestGson().toJson(dataParam), resultType);
+    }
+    public <ResultType extends WebResultAdapter>ResultType PATCH(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+        return this.PATCH(getRequestGson().toJson(dataParam), resultType);
+    }
+
     public <ResultType extends WebResultAdapter>ResultType POST(Class<ResultType> resultType) throws IOException, WebException {
         return this.POST(null, resultType);
     }
@@ -303,6 +316,21 @@ public class JsonWeb {
         return this.MULTIPART(null, resultType);
     }
 
+    public WebResult POST(Object dataParam) throws IOException, WebException {
+        return POST(getRequestGson().toJson(dataParam), WebResult.class);
+    }
+
+    public WebResult PUT(Object dataParam) throws IOException, WebException {
+        return PUT(getRequestGson().toJson(dataParam), WebResult.class);
+    }
+
+    public WebResult DELETE(Object dataParam) throws IOException, WebException {
+        return DELETE(getRequestGson().toJson(dataParam), WebResult.class);
+    }
+
+    public WebResult PATCH(Object dataParam) throws IOException, WebException {
+        return PATCH(getRequestGson().toJson(dataParam), WebResult.class);
+    }
 
     public WebResult GET() throws IOException, WebException {
         return GET(WebResult.class);
@@ -331,6 +359,8 @@ public class JsonWeb {
     public WebResult MULTIPART() throws IOException, WebException {
         return MULTIPART(WebResult.class);
     }
+
+
 
 
 
