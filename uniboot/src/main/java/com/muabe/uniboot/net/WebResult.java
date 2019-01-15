@@ -120,6 +120,10 @@ public class WebResult extends WebResultAdapter {
         return fromJsonList(type);
     }
 
+    public <T>List<T> getModelList(Class<T> type, String... deps) throws JSONException {
+        return fromJsonList(type);
+    }
+
     public boolean isSuccessful(){
         return response.isSuccessful();
     }
