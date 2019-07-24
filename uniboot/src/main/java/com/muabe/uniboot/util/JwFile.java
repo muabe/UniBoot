@@ -409,8 +409,8 @@ public class JwFile {
 	public static void zip(File[] files, File zipFile) throws IOException {
 	    BufferedInputStream origin = null;
 	    ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-	    try { 
-	        byte data[] = new byte[BUFFER_SIZE];
+	    try {
+            byte[] data = new byte[BUFFER_SIZE];
 	        for (int i = 0; i < files.length; i++) {
 	            FileInputStream fi = new FileInputStream(files[i]);    
 	            origin = new BufferedInputStream(fi, BUFFER_SIZE);
@@ -605,7 +605,7 @@ public class JwFile {
 //	        saveFile(in,fileName);
 //	}
 	
-	public void saveFile(InputStream in, String fileName) throws FileNotFoundException,IOException  {
+	public void saveFile(InputStream in, String fileName) throws IOException  {
 		int readCount = 0;
         byte[] buf = new byte[1024];
 
@@ -620,7 +620,7 @@ public class JwFile {
 
 	}
 	
-	public Drawable getDrawable(String fileName) throws FileNotFoundException,IOException{
+	public Drawable getDrawable(String fileName) throws IOException{
 		if(fileName==null || fileName.equals("")){
 			return null;
 		}

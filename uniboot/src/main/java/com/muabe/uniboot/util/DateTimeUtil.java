@@ -163,11 +163,8 @@ public class DateTimeUtil {
 			return false;
 		}
 
-		if (!formatter.format(date).equals(s))
-			return false;
-
-		return true;
-	}
+        return formatter.format(date).equals(s);
+    }
 
 	/**
 	 * 현재 날짜를 "yyyy-MM-dd" 형태의 포멧으로 표현하는 문자열을 리턴한다.
@@ -560,7 +557,7 @@ public class DateTimeUtil {
 		}
 		int time = min / 60;
 		min = min % 60;
-		return new String(time + "시간 " + min + "분");
+		return time + "시간 " + min + "분";
 		// seconds in 1 day
 	}
 	/**
@@ -673,7 +670,7 @@ public class DateTimeUtil {
 	 */
 	public static int ageBetween(String from, String to, String format)
 			throws ParseException {
-		return (int) (daysBetween(from, to, format) / 365);
+		return (daysBetween(from, to, format) / 365);
 	}
 
 	/**
@@ -792,7 +789,7 @@ public class DateTimeUtil {
 		String ret="";
 		try{
 			ret=addTimes(date, -9,"yyyy-MM-dd HH:mm:ss:SSS ");
-			char rets[]=ret.toCharArray();
+            char[] rets = ret.toCharArray();
 			rets[10]='T';
 			rets[23]='Z';
 			ret=new String(rets);
@@ -861,9 +858,9 @@ public class DateTimeUtil {
 		java.text.DecimalFormat fourDf = new java.text.DecimalFormat("0000");
 		java.text.DecimalFormat twoDf = new java.text.DecimalFormat("00");
 		String tempDate =
-				String.valueOf(fourDf.format(year))
-						+ String.valueOf(twoDf.format(month))
-						+ String.valueOf(twoDf.format(day));
+                fourDf.format(year)
+						+ twoDf.format(month)
+						+ twoDf.format(day);
 		Date targetDate = null;
 
 		try {
@@ -871,9 +868,9 @@ public class DateTimeUtil {
 		} catch (ParseException pe) {
 			day = lastDay(year, month);
 			tempDate =
-					String.valueOf(fourDf.format(year))
-							+ String.valueOf(twoDf.format(month))
-							+ String.valueOf(twoDf.format(day));
+                    fourDf.format(year)
+							+ twoDf.format(month)
+							+ twoDf.format(day);
 			targetDate = check(tempDate, "yyyyMMdd");
 		}
 
@@ -962,9 +959,9 @@ public class DateTimeUtil {
 		java.text.DecimalFormat fourDf = new java.text.DecimalFormat("0000");
 		java.text.DecimalFormat twoDf = new java.text.DecimalFormat("00");
 		String tempDate =
-				String.valueOf(fourDf.format(year))
-						+ String.valueOf(twoDf.format(month))
-						+ String.valueOf(twoDf.format(day));
+                fourDf.format(year)
+						+ twoDf.format(month)
+						+ twoDf.format(day);
 		date = check(tempDate, format);
 
 		return formatter.format(date);
@@ -1057,15 +1054,11 @@ public class DateTimeUtil {
 			Date checkTime) {
 
 		if (startTime.before(endTime)) {
-			if (endTime.after(checkTime) && startTime.before(checkTime))
-				return true;
+            return endTime.after(checkTime) && startTime.before(checkTime);
 		} else {
-			if (endTime.after(checkTime) || startTime.before(checkTime)) {
-				return true;
-			}
+            return endTime.after(checkTime) || startTime.before(checkTime);
 		}
-		return false;
-	}
+    }
 	/**
 	 * 현재 시각이 시작시각(<code>startTime</code>) 과 종료시각(<code>endTime</code>) 사이에 위치하는지 여부를 리턴한다.
 	 * 인자로 전달되는 시각들은 "HH:mm" 또는  "HH/mm" 형태의 포멧이어야 한다.

@@ -733,41 +733,41 @@ public class BarLayout extends LinearLayout{
 		
 		public BarStyle setBackgroundColor(int color){
 			for(int i=0;i<body.getChildCount();i++){
-				((Bar)body.getChildAt(i)).setBackgroundColor(color);
+				body.getChildAt(i).setBackgroundColor(color);
 			}
 			return this;
 		}
 		public BarStyle setBodyBackgroundDrawable(int index, Drawable background){
-			((Bar)body.getChildAt(index)).setBackgroundDrawable(background);
+			body.getChildAt(index).setBackgroundDrawable(background);
 			return this;
 		}
 		public BarStyle setBodyBackgroundResource(int index, int resid){
-			((Bar)body.getChildAt(index)).setBackgroundResource(resid);
+			body.getChildAt(index).setBackgroundResource(resid);
 			return this;
 		}
 		public BarStyle setBodyBackgroundResource(int resid){
 			for(int i=0;i<body.getChildCount();i++){
-				((Bar)body.getChildAt(i)).setBackgroundResource(resid);
+				body.getChildAt(i).setBackgroundResource(resid);
 			}
 			return this;
 		}
 		public BarStyle setBackgroundDrawable(int index, Drawable background){
-			((Bar)body.getChildAt(index)).setBackgroundDrawable(background);
+			body.getChildAt(index).setBackgroundDrawable(background);
 			return this;
 		}
 		public BarStyle setBackgroundDrawable(Drawable background){
 			for(int i=0;i<body.getChildCount();i++){
-				((Bar)body.getChildAt(i)).setBackgroundDrawable(background);
+				body.getChildAt(i).setBackgroundDrawable(background);
 			}
 			return this;
 		}
 		public BarStyle setBackgroundResource(int index, int resid){
-			((Bar)body.getChildAt(index)).setBackgroundResource(resid);
+			body.getChildAt(index).setBackgroundResource(resid);
 			return this;
 		} 
 		public BarStyle setBackgroundResource(int resid){
 			for(int i=0;i<body.getChildCount();i++){
-				((Bar)body.getChildAt(i)).setBackgroundResource(resid);
+				body.getChildAt(i).setBackgroundResource(resid);
 			}
 			return this;
 		}

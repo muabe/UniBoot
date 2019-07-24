@@ -39,7 +39,7 @@ public class PiePercentSkin implements IPieSkin {
 		layout = new LinearLayout(pl.getContext());
 		layoutParams = new MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT);
 		layout.setLayoutParams(layoutParams);
-		layout.setOrientation(layout.HORIZONTAL);
+		layout.setOrientation(LinearLayout.HORIZONTAL);
 		textView = new TextView(pl.getContext());
 		textView.setLayoutParams(new MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT,
 		        MarginLayoutParams.WRAP_CONTENT));
@@ -62,7 +62,7 @@ public class PiePercentSkin implements IPieSkin {
 	@Override
 	public void draw(PieLayout pieLayout, Canvas canvas, float startAngle, float maxAngle, float startRadians,
 	        float radians, int arcIndex) {
-		int value = (int) Math.round(radians * 100f / (maxAngle - startAngle));
+		int value = Math.round(radians * 100f / (maxAngle - startAngle));
 		if (pl == null) {
 			return;
 		}

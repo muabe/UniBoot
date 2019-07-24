@@ -27,6 +27,21 @@ public class WebException extends Exception  {
         this.body = body;
     }
 
+    public WebException(WebResult webResult, String message, Throwable exception) {
+        super(message, exception);
+        this.response = webResult.getResponse();
+        this.message = message;
+        this.exception = exception;
+        this.body = webResult.getBody();
+    }
+
+    public WebException(WebResult webResult, String message) {
+        super(message);
+        this.response = webResult.getResponse();
+        this.message = message;
+        this.body = webResult.getBody();
+    }
+
     public Response getResponse(){
         return this.response;
     }

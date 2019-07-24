@@ -91,9 +91,9 @@ public class WebResult extends WebResultAdapter {
         return result;
     }
 
-    public <T>List<T> fromJsonList(Class<T> type) throws JSONException {
+    public <T>List<T> fromJsonList(Class<T> type, String... deps) throws JSONException {
         ArrayList<T> list = new ArrayList<>();
-        JSONArray array = getJSONArray();
+        JSONArray array = getJSONArray(deps);
         if(array!=null) {
             for (int i = 0; i < array.length(); i++) {
                 list.add(fromJson(type, array.getJSONObject(i)));
@@ -121,7 +121,22 @@ public class WebResult extends WebResultAdapter {
     }
 
     public <T>List<T> getModelList(Class<T> type, String... deps) throws JSONException {
-        return fromJsonList(type);
+        return fromJsonList(type, deps);
+    }
+
+    public String getStringData(String name, String... deps) throws JSONException {
+        JSONObject jsonObject = getJSON(deps);
+        return jsonObject.getString(name);
+    }
+
+    public int getIntData(String name, String... deps) throws JSONException {
+        JSONObject jsonObject = getJSON(deps);
+        return jsonObject.getInt(name);
+    }
+
+    public boolean getBooleanData(String name, String... deps) throws JSONException {
+        JSONObject jsonObject = getJSON(deps);
+        return jsonObject.getBoolean(name);
     }
 
     public boolean isSuccessful(){

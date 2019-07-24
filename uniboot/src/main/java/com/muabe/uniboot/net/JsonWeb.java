@@ -33,12 +33,14 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
@@ -60,7 +62,7 @@ public class JsonWeb {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType MEDIA_TYPE_IMAGE = MediaType.parse("application/octet-stream");
     private OkHttpClient client;
-    private HashMap<String, String> param;
+    private HashMap<String, Object> param;
     private HashMap<String, String> header;
     private HashMap<String, File> file;
     private String host;
@@ -69,7 +71,7 @@ public class JsonWeb {
     protected boolean debug = true;
     private Call call;
 
-    public static enum METHOD{
+    public enum METHOD{
         POST,PUT,DELETE,PATCH
     }
 
@@ -136,11 +138,11 @@ public class JsonWeb {
 
     }
 
-    public <ResultType extends WebResultAdapter>ResultType GET(Class<ResultType> resultType) throws IOException, WebException {
+    protected <ResultType extends WebResultAdapter>ResultType GET(Class<ResultType> resultType) throws IOException, WebException {
         HttpUrl.Builder builder = HttpUrl.parse(getFullUrl()).newBuilder();
         String[] keys = getParamKeys();
         for (String key : keys) {
-            builder.addEncodedQueryParameter(key, param.get(key));
+            builder.addEncodedQueryParameter(key, (String)param.get(key));
         }
         HttpUrl httpUrl = builder.build();
 
@@ -164,7 +166,9 @@ public class JsonWeb {
     private <ResultType extends WebResultAdapter>ResultType POST(METHOD method, String text, Class<ResultType> resultType) throws IOException, WebException {
         Request.Builder reqestBuilder = new Request.Builder();
         addHeaderAll(reqestBuilder);
-
+        if(text == null){
+            text = "";
+        }
         RequestBody body = RequestBody.create(JSON, text);
         reqestBuilder.url(getFullUrl());
 
@@ -192,7 +196,7 @@ public class JsonWeb {
         FormEncodingBuilder body = new FormEncodingBuilder();
         String[] keys = getParamKeys();
         for (String key : keys) {
-            body.add(key, param.get(key));
+            body.add(key, (String)param.get(key));
         }
 
 
@@ -227,7 +231,7 @@ public class JsonWeb {
 
         String[] keys = getParamKeys();
         for (String key : keys) {
-            body.addFormDataPart(key, param.get(key));
+            body.addFormDataPart(key, (String)param.get(key));
         }
 
         String[] fileKeys = getFileKeys();
@@ -253,67 +257,54 @@ public class JsonWeb {
     }
 
 
-    public <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
+    protected <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
         return FORM(METHOD.POST, resultType);
     }
-
-    public <ResultType extends WebResultAdapter>ResultType POST(String text, Class<ResultType> resultType) throws IOException, WebException {
-        if(text==null){
-            return this.FORM(METHOD.POST, resultType);
-        }else{
-            return this.POST(METHOD.POST, text, resultType);
-        }
+    protected <ResultType extends WebResultAdapter>ResultType POST(String text, Class<ResultType> resultType) throws IOException, WebException {
+        return this.POST(METHOD.POST, text, resultType);
     }
-    public <ResultType extends WebResultAdapter>ResultType PUT(String text, Class<ResultType> resultType) throws WebException, IOException {
-        if(text==null){
-            return this.FORM(METHOD.PUT, resultType);
-        }else{
-            return this.POST(METHOD.PUT, text, resultType);
-        }
+    protected <ResultType extends WebResultAdapter>ResultType PUT(String text, Class<ResultType> resultType) throws WebException, IOException {
+        return this.POST(METHOD.PUT, text, resultType);
     }
-    public <ResultType extends WebResultAdapter>ResultType DELETE(String text, Class<ResultType> resultType) throws WebException, IOException {
-        if(text==null){
-            return this.FORM(METHOD.DELETE, resultType);
-        }else{
-            return this.POST(METHOD.DELETE, text, resultType);
-        }
+    protected <ResultType extends WebResultAdapter>ResultType DELETE(String text, Class<ResultType> resultType) throws WebException, IOException {
+        return this.POST(METHOD.DELETE, text, resultType);
     }
-    public <ResultType extends WebResultAdapter>ResultType PATCH(String text, Class<ResultType> resultType) throws WebException, IOException {
-        if(text==null){
-            return this.FORM(METHOD.PATCH, resultType);
-        }else{
-            return this.POST(METHOD.PATCH, text, resultType);
-        }
+    protected <ResultType extends WebResultAdapter>ResultType PATCH(String text, Class<ResultType> resultType) throws WebException, IOException {
+        return this.POST(METHOD.PATCH, text, resultType);
     }
 
-    public <ResultType extends WebResultAdapter>ResultType POST(Object dataParam, Class<ResultType> resultType) throws IOException, WebException {
-        return this.POST(getRequestGson().toJson(dataParam), resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType PUT(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-        return this.PUT(getRequestGson().toJson(dataParam), resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType DELETE(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-        return this.DELETE(getRequestGson().toJson(dataParam), resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType PATCH(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-        return this.PATCH(getRequestGson().toJson(dataParam), resultType);
-    }
+//    public <ResultType extends WebResultAdapter>ResultType POST(Object dataParam, Class<ResultType> resultType) throws IOException, WebException {
+//        return this.POST(getRequestGson().toJson(dataParam), resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType PUT(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+//        return this.PUT(getRequestGson().toJson(dataParam), resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType DELETE(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+//        return this.DELETE(getRequestGson().toJson(dataParam), resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType PATCH(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
+//        return this.PATCH(getRequestGson().toJson(dataParam), resultType);
+//    }
+//
+//    public <ResultType extends WebResultAdapter>ResultType POST(Class<ResultType> resultType) throws IOException, WebException {
+//        return this.POST(null, resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType PUT(Class<ResultType> resultType) throws WebException, IOException {
+//        return PUT(null, resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType DELETE(Class<ResultType> resultType) throws WebException, IOException {
+//        return DELETE(null, resultType);
+//    }
+//    public <ResultType extends WebResultAdapter>ResultType PATCH(Class<ResultType> resultType) throws WebException, IOException {
+//        return PATCH(null, resultType);
+//    }
+//
+//    public <ResultType extends WebResultAdapter>ResultType MULTIPART(Class<ResultType> resultType) throws WebException, IOException {
+//        return this.MULTIPART(null, resultType);
+//    }
 
-    public <ResultType extends WebResultAdapter>ResultType POST(Class<ResultType> resultType) throws IOException, WebException {
-        return this.POST(null, resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType PUT(Class<ResultType> resultType) throws WebException, IOException {
-        return PUT(null, resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType DELETE(Class<ResultType> resultType) throws WebException, IOException {
-        return DELETE(null, resultType);
-    }
-    public <ResultType extends WebResultAdapter>ResultType PATCH(Class<ResultType> resultType) throws WebException, IOException {
-        return PATCH(null, resultType);
-    }
-
-    public <ResultType extends WebResultAdapter>ResultType MULTIPART(Class<ResultType> resultType) throws WebException, IOException {
-        return this.MULTIPART(null, resultType);
+    public WebResult POST(String json_text) throws IOException, WebException {
+        return POST(json_text, WebResult.class);
     }
 
     public WebResult POST(Object dataParam) throws IOException, WebException {
@@ -332,6 +323,7 @@ public class JsonWeb {
         return PATCH(getRequestGson().toJson(dataParam), WebResult.class);
     }
 
+
     public WebResult GET() throws IOException, WebException {
         return GET(WebResult.class);
     }
@@ -341,23 +333,39 @@ public class JsonWeb {
     }
 
     public WebResult POST() throws IOException, WebException {
-        return POST(WebResult.class);
+        String text = "";
+        if(param.size() > 0){
+            text = getRequestGson().toJson(param);
+        }
+        return POST(text, WebResult.class);
     }
 
     public WebResult PUT() throws IOException, WebException {
-        return PUT(WebResult.class);
+        String text = "";
+        if(param.size() > 0){
+            text = getRequestGson().toJson(param);
+        }
+        return PUT(text, WebResult.class);
     }
 
     public WebResult DELETE() throws IOException, WebException {
-        return DELETE(WebResult.class);
+        String text = "";
+        if(param.size() > 0){
+            text = getRequestGson().toJson(param);
+        }
+        return DELETE(text , WebResult.class);
     }
 
     public WebResult PATCH() throws IOException, WebException {
-        return PATCH(WebResult.class);
+        String text = "";
+        if(param.size() > 0){
+            text = getRequestGson().toJson(param);
+        }
+        return PATCH(text, WebResult.class);
     }
 
     public WebResult MULTIPART() throws IOException, WebException {
-        return MULTIPART(WebResult.class);
+        return MULTIPART(null, WebResult.class);
     }
 
 
@@ -385,7 +393,7 @@ public class JsonWeb {
         if (header.size() == 0) {
             return new String[0];
         }
-        String keys[] = header.keySet().toArray(new String[0]);
+        String[] keys = header.keySet().toArray(new String[0]);
         if (keys == null) {
             return new String[0];
         }
@@ -397,7 +405,7 @@ public class JsonWeb {
             // Create MD5 Hash
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
             digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
+            byte[] messageDigest = digest.digest();
 
             // Create Hex String
             StringBuffer hexString = new StringBuffer();
@@ -413,11 +421,11 @@ public class JsonWeb {
 
     public static String sha1(String s, String keyString) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
-        SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), "HmacSHA1");
+        SecretKeySpec key = new SecretKeySpec((keyString).getBytes(StandardCharsets.UTF_8), "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(key);
 
-        byte[] bytes = mac.doFinal(s.getBytes("UTF-8"));
+        byte[] bytes = mac.doFinal(s.getBytes(StandardCharsets.UTF_8));
         return Base64.encodeToString(bytes, bytes.length);
     }
 
@@ -433,7 +441,7 @@ public class JsonWeb {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
 
-        byte[] bytes = cipher.doFinal(message.getBytes("UTF-8"));
+        byte[] bytes = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
         return Base64.encodeToString(bytes, bytes.length);
     }
 
@@ -449,7 +457,7 @@ public class JsonWeb {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 
-        byte[] bytes = cipher.doFinal(msg.getBytes("UTF-8"));
+        byte[] bytes = cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8));
         return new String(bytes);
     }
 
@@ -516,6 +524,11 @@ public class JsonWeb {
         return this;
     }
 
+    public JsonWeb addParamList(String key, List<?> value) {
+        param.put(key, value);
+        return this;
+    }
+
     public JsonWeb removeParam(String key){
         param.remove(key);
         return this;
@@ -525,7 +538,7 @@ public class JsonWeb {
         if (param.size() == 0) {
             return new String[0];
         }
-        String keys[] = param.keySet().toArray(new String[0]);
+        String[] keys = param.keySet().toArray(new String[0]);
         if (keys == null) {
             return new String[0];
         }
@@ -551,7 +564,7 @@ public class JsonWeb {
         if (file.size() == 0) {
             return new String[0];
         }
-        String keys[] = file.keySet().toArray(new String[0]);
+        String[] keys = file.keySet().toArray(new String[0]);
         if (keys == null) {
             return new String[0];
         }
@@ -569,7 +582,6 @@ public class JsonWeb {
     }
 
     private void clearAllParams(){
-        clearHeader();
         clearParam();
         clearFile();
 //        uri = "";

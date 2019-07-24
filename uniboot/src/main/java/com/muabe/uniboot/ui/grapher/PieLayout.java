@@ -139,7 +139,7 @@ public class PieLayout extends FrameLayout{
 			backArc.draw(canvas);
 		}
 		for(int i=0;i<arcs.size();i++){
-			Arc arc = (Arc)arcs.get(i);
+			Arc arc = arcs.get(i);
 			arc.setStrokSize(getStrokSize());
 			if(!isInitpieSkin){
 				for(int j=0;j<pieSkin.size();j++){
@@ -163,10 +163,10 @@ public class PieLayout extends FrameLayout{
 	@Override
 	public void draw(Canvas canvas) {
 		super.draw(canvas);
-	};
+	}
 
 
-	private ArrayList<Thread> threadPool = new ArrayList<Thread>();
+    private ArrayList<Thread> threadPool = new ArrayList<Thread>();
 	/**
 	 * 선택한 호의 에니메이션 효과를 시작한다.
 	 * @param arcIndex 선택할 호의 인덱스
@@ -235,7 +235,7 @@ public class PieLayout extends FrameLayout{
 		private void animDraw(){
 			float allEnd=0;
 			float preEnd = 0;
-			float ends[] = new float[arcs.size()]; 
+            float[] ends = new float[arcs.size()];
 			for(int i=0;i<arcs.size();i++){
 				Arc arc = arcs.get(i);
 				ends[i]= arc.end;

@@ -79,7 +79,7 @@ public class MeasureLayout extends FrameLayout  implements OnTouchListener{
 	}
 	
 	public void addLine(int measureCount, CellDisplay child){
-		int leftMargin = (int) (getWidth()/2 - measure*measureCount/2);
+		int leftMargin = (getWidth()/2 - measure*measureCount/2);
 		LinearLayout lineLayout = new LinearLayout(getContext()); 
 		lineLayout.setOrientation(LinearLayout.HORIZONTAL); 
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -100,7 +100,7 @@ public class MeasureLayout extends FrameLayout  implements OnTouchListener{
 			}else{
 //				mc.setBackgroundColor(Color.GREEN);
 			}
-			mc.setMeasure((int)measure*measureCount, child.getView(i));
+			mc.setMeasure(measure *measureCount, child.getView(i));
 			lineLayout.addView(mc);
 		}
 	}
@@ -151,7 +151,7 @@ public class MeasureLayout extends FrameLayout  implements OnTouchListener{
 	}
 	
 	interface CellDisplay{
-		public View getView(int count);
+		View getView(int count);
 	}
 	
 	

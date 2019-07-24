@@ -10,7 +10,7 @@ public class SimpleStyle {
 	public int margin;
 	public int meansure;
 	public Align align;
-	public static enum Align{
+	public enum Align{
 		NONE,LEFT,CENTER,RIGHT
 	}
 	

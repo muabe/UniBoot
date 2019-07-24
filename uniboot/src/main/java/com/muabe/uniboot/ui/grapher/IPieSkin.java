@@ -7,7 +7,7 @@ import android.graphics.Canvas;
  * @email markjmind@gmail.com
  */
 public interface IPieSkin {
-	public void init(PieLayout pieLayout);
-	public void draw(PieLayout pieLayout, Canvas canvas, float startAngle, float maxAngle, float startRadians, float radians, int arcIndex);
+	void init(PieLayout pieLayout);
+	void draw(PieLayout pieLayout, Canvas canvas, float startAngle, float maxAngle, float startRadians, float radians, int arcIndex);
 	
 }

@@ -50,9 +50,9 @@ public class MenuBoot extends UniBoot {
         MenuBoot.LEFT = id.left;
         MenuBoot.RIGHT = id.right;
 
-        blur = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_blur);
-        left_touch = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
-        right_touch = (FrameLayout) activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_right);
+        blur = activity.findViewById(R.id.uni_boot_frame_sliding_menu_blur);
+        left_touch = activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
+        right_touch = activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_right);
 
         leftWing = new WingOption(view.left, left_touch, true);
         rightWing = new WingOption(view.right, right_touch, false);

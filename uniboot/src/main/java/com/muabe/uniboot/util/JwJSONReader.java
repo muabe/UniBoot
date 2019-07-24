@@ -16,7 +16,7 @@ import java.util.Iterator;
  */
 public abstract class JwJSONReader<ParentResult> {
     boolean isElementSort = true;
-    public static enum JSONType{
+    public enum JSONType{
         Object,
         JSONObject,
         JSONArray
@@ -118,11 +118,11 @@ public abstract class JwJSONReader<ParentResult> {
         }
 
         if(object instanceof JSONObject){
-            type = type.JSONObject;
+            type = JSONType.JSONObject;
         }else if(object instanceof JSONArray){
-            type = type.JSONArray;
+            type = JSONType.JSONArray;
         }else{
-            type = type.Object;
+            type = JSONType.Object;
         }
         return type;
     }
