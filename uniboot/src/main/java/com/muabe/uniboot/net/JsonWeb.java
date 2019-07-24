@@ -185,7 +185,7 @@ public class JsonWeb {
         return result;
     }
 
-    private <ResultType extends WebResultAdapter>ResultType FORM(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
+    private <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
 
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
@@ -200,11 +200,9 @@ public class JsonWeb {
         }
 
 
-        Request request = initMethod(method, reqestBuilder, body.build());
-        String methodString = method.toString();
-        if(method.equals(METHOD.POST)){
-            methodString = method.toString()+"(FORM)";
-        }
+        Request request = initMethod(METHOD.POST, reqestBuilder, body.build());
+        String methodString = METHOD.POST.toString()+"(FORM)";
+
         debugRequest(methodString, paramString);
 
         clearAllParams();
@@ -256,71 +254,24 @@ public class JsonWeb {
         return result;
     }
 
-
-    protected <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
-        return FORM(METHOD.POST, resultType);
-    }
-    protected <ResultType extends WebResultAdapter>ResultType POST(String text, Class<ResultType> resultType) throws IOException, WebException {
-        return this.POST(METHOD.POST, text, resultType);
-    }
-    protected <ResultType extends WebResultAdapter>ResultType PUT(String text, Class<ResultType> resultType) throws WebException, IOException {
-        return this.POST(METHOD.PUT, text, resultType);
-    }
-    protected <ResultType extends WebResultAdapter>ResultType DELETE(String text, Class<ResultType> resultType) throws WebException, IOException {
-        return this.POST(METHOD.DELETE, text, resultType);
-    }
-    protected <ResultType extends WebResultAdapter>ResultType PATCH(String text, Class<ResultType> resultType) throws WebException, IOException {
-        return this.POST(METHOD.PATCH, text, resultType);
-    }
-
-//    public <ResultType extends WebResultAdapter>ResultType POST(Object dataParam, Class<ResultType> resultType) throws IOException, WebException {
-//        return this.POST(getRequestGson().toJson(dataParam), resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType PUT(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-//        return this.PUT(getRequestGson().toJson(dataParam), resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType DELETE(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-//        return this.DELETE(getRequestGson().toJson(dataParam), resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType PATCH(Object dataParam, Class<ResultType> resultType) throws WebException, IOException {
-//        return this.PATCH(getRequestGson().toJson(dataParam), resultType);
-//    }
-//
-//    public <ResultType extends WebResultAdapter>ResultType POST(Class<ResultType> resultType) throws IOException, WebException {
-//        return this.POST(null, resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType PUT(Class<ResultType> resultType) throws WebException, IOException {
-//        return PUT(null, resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType DELETE(Class<ResultType> resultType) throws WebException, IOException {
-//        return DELETE(null, resultType);
-//    }
-//    public <ResultType extends WebResultAdapter>ResultType PATCH(Class<ResultType> resultType) throws WebException, IOException {
-//        return PATCH(null, resultType);
-//    }
-//
-//    public <ResultType extends WebResultAdapter>ResultType MULTIPART(Class<ResultType> resultType) throws WebException, IOException {
-//        return this.MULTIPART(null, resultType);
-//    }
-
     public WebResult POST(String json_text) throws IOException, WebException {
-        return POST(json_text, WebResult.class);
+        return POST(METHOD.POST, json_text, WebResult.class);
     }
 
     public WebResult POST(Object dataParam) throws IOException, WebException {
-        return POST(getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.POST, getRequestGson().toJson(dataParam), WebResult.class);
     }
 
     public WebResult PUT(Object dataParam) throws IOException, WebException {
-        return PUT(getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.PUT, getRequestGson().toJson(dataParam), WebResult.class);
     }
 
     public WebResult DELETE(Object dataParam) throws IOException, WebException {
-        return DELETE(getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.DELETE, getRequestGson().toJson(dataParam), WebResult.class);
     }
 
     public WebResult PATCH(Object dataParam) throws IOException, WebException {
-        return PATCH(getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.PATCH, getRequestGson().toJson(dataParam), WebResult.class);
     }
 
 
@@ -337,7 +288,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return POST(text, WebResult.class);
+        return POST(METHOD.POST, text, WebResult.class);
     }
 
     public WebResult PUT() throws IOException, WebException {
@@ -345,7 +296,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return PUT(text, WebResult.class);
+        return POST(METHOD.PUT, text, WebResult.class);
     }
 
     public WebResult DELETE() throws IOException, WebException {
@@ -353,7 +304,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return DELETE(text , WebResult.class);
+        return POST(METHOD.DELETE, text , WebResult.class);
     }
 
     public WebResult PATCH() throws IOException, WebException {
@@ -361,7 +312,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return PATCH(text, WebResult.class);
+        return POST(METHOD.PATCH, text, WebResult.class);
     }
 
     public WebResult MULTIPART() throws IOException, WebException {
