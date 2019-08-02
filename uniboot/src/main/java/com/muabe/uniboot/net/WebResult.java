@@ -15,12 +15,21 @@ import java.util.List;
  * Created by markj on 2015-12-04.
  */
 public class WebResult extends WebResultAdapter {
+    private String[] deps = null;
 
     public WebResult(){
 
     }
 
+    public WebResult setDepth(String... deps_jsonKey){
+        deps = deps_jsonKey;
+        return this;
+    }
+
     public JSONObject getJSON(String... deps_jsonKey) throws JSONException {
+        if(deps_jsonKey == null){
+            deps_jsonKey = deps;
+        }
         if(getBody()==null || getBody().length()==0){
             return null;
         }
@@ -39,6 +48,10 @@ public class WebResult extends WebResultAdapter {
     }
 
     public JSONArray getJSONArray(String... deps_jsonKey) throws JSONException {
+        if(deps_jsonKey == null){
+            deps_jsonKey = deps;
+        }
+
         if(getBody()==null || getBody().length()==0){
             return null;
         }
