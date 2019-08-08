@@ -17,28 +17,28 @@ import java.util.List;
 public class WebResult extends WebResultAdapter {
     private String[] deps = null;
 
-    public WebResult(){
+    public WebResult() {
 
     }
 
-    public WebResult setDepth(String... deps_jsonKey){
+    public WebResult setDepth(String... deps_jsonKey) {
         deps = deps_jsonKey;
         return this;
     }
 
     public JSONObject getJSON(String... deps_jsonKey) throws JSONException {
-        if(deps_jsonKey == null){
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
             deps_jsonKey = deps;
         }
-        if(getBody()==null || getBody().length()==0){
+        if (getBody() == null || getBody().length() == 0) {
             return null;
         }
-        if(deps_jsonKey==null || deps_jsonKey.length==0){
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
             return new JSONObject(getBody());
-        }else{
+        } else {
             JSONObject json = new JSONObject(getBody());
-            for(String key:deps_jsonKey){
-                if(json.isNull(key)){
+            for (String key : deps_jsonKey) {
+                if (json.isNull(key)) {
                     return null;
                 }
                 json = json.getJSONObject(key);
@@ -48,39 +48,39 @@ public class WebResult extends WebResultAdapter {
     }
 
     public JSONArray getJSONArray(String... deps_jsonKey) throws JSONException {
-        if(deps_jsonKey == null){
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
             deps_jsonKey = deps;
         }
 
-        if(getBody()==null || getBody().length()==0){
+        if (getBody() == null || getBody().length() == 0) {
             return null;
         }
-        if(deps_jsonKey==null || deps_jsonKey.length==0){
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
             return new JSONArray(getBody());
-        }else{
+        } else {
             JSONObject json = new JSONObject(getBody());
-            for(int i=0;i<deps_jsonKey.length-1;i++){
-                if(json.isNull(deps_jsonKey[i])){
+            for (int i = 0; i < deps_jsonKey.length - 1; i++) {
+                if (json.isNull(deps_jsonKey[i])) {
                     return null;
                 }
                 json = json.optJSONObject(deps_jsonKey[i]);
             }
-            if(json.isNull(deps_jsonKey[deps_jsonKey.length-1])){
+            if (json.isNull(deps_jsonKey[deps_jsonKey.length - 1])) {
                 return null;
             }
 
-            return json.optJSONArray(deps_jsonKey[deps_jsonKey.length-1]);
+            return json.optJSONArray(deps_jsonKey[deps_jsonKey.length - 1]);
         }
     }
 
-    public JwJSONReader.JSONType getJsonType(String... deps_jsonKey) throws JSONException{
-        JwJSONReader.JSONType type =  JwJSONReader.getJSONType(getJSON(deps_jsonKey), null);
+    public JwJSONReader.JSONType getJsonType(String... deps_jsonKey) throws JSONException {
+        JwJSONReader.JSONType type = JwJSONReader.getJSONType(getJSON(deps_jsonKey), null);
         return type;
     }
 
-   public <Dto>Dto fromJson(Class<Dto> dtoClass, String... deps) throws JSONException {
+    public <Dto> Dto fromJson(Class<Dto> dtoClass, String... deps) throws JSONException {
         JSONObject jsonObject = getJSON(deps);
-        if(jsonObject==null){
+        if (jsonObject == null) {
             return null;
         }
         Gson gson = JsonWeb.getReponseGson();
@@ -88,15 +88,15 @@ public class WebResult extends WebResultAdapter {
         return result;
     }
 
-    public <Dto>Dto fromJson(Class<Dto> dtoClass, JSONObject json){
+    public <Dto> Dto fromJson(Class<Dto> dtoClass, JSONObject json) {
         Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(json.toString(), dtoClass);
         return result;
     }
 
-    public <Dto>Dto fromJson(TypeToken<?> typeToken, String... deps) throws JSONException {
+    public <Dto> Dto fromJson(TypeToken<?> typeToken, String... deps) throws JSONException {
         JSONObject jsonObject = getJSON(deps);
-        if(jsonObject==null){
+        if (jsonObject == null) {
             return null;
         }
         Gson gson = JsonWeb.getReponseGson();
@@ -104,10 +104,10 @@ public class WebResult extends WebResultAdapter {
         return result;
     }
 
-    public <T>List<T> fromJsonList(Class<T> type, String... deps) throws JSONException {
+    public <T> List<T> fromJsonList(Class<T> type, String... deps) throws JSONException {
         ArrayList<T> list = new ArrayList<>();
         JSONArray array = getJSONArray(deps);
-        if(array!=null) {
+        if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 list.add(fromJson(type, array.getJSONObject(i)));
             }
@@ -115,11 +115,11 @@ public class WebResult extends WebResultAdapter {
         return list;
     }
 
-    public <Dto>Dto getModel(Class<Dto> dtoClass, String... deps) throws JSONException {
+    public <Dto> Dto getModel(Class<Dto> dtoClass, String... deps) throws JSONException {
         return fromJson(dtoClass, deps);
     }
 
-    public <Dto>Dto getModel(Class<Dto> dtoClass, JSONObject json){
+    public <Dto> Dto getModel(Class<Dto> dtoClass, JSONObject json) {
         Gson gson = JsonWeb.getReponseGson();
         Dto result = gson.fromJson(json.toString(), dtoClass);
         return fromJson(dtoClass, json);
@@ -129,11 +129,11 @@ public class WebResult extends WebResultAdapter {
 //        return fromJson(typeToken, deps);
 //    }
 
-    public <T>List<T> getModelList(Class<T> type) throws JSONException {
+    public <T> List<T> getModelList(Class<T> type) throws JSONException {
         return fromJsonList(type);
     }
 
-    public <T>List<T> getModelList(Class<T> type, String... deps) throws JSONException {
+    public <T> List<T> getModelList(Class<T> type, String... deps) throws JSONException {
         return fromJsonList(type, deps);
     }
 
@@ -152,7 +152,7 @@ public class WebResult extends WebResultAdapter {
         return jsonObject.getBoolean(name);
     }
 
-    public boolean isSuccessful(){
+    public boolean isSuccessful() {
         return response.isSuccessful();
     }
 

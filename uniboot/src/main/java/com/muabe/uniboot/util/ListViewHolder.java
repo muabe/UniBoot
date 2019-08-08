@@ -3,6 +3,7 @@ package com.muabe.uniboot.util;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,7 +54,6 @@ public class ListViewHolder implements HolderInterface{
     }
 
     public TextView getTextView(int id){
-
         return (TextView) getView(id);
     }
 
@@ -63,6 +63,9 @@ public class ListViewHolder implements HolderInterface{
 
     public EditText getEditText(int id){
         return (EditText) getView(id);
+    }
+    public TextView getCheckBox(int id){
+        return (CheckBox) getView(id);
     }
 
     public Button getButton(int id){
