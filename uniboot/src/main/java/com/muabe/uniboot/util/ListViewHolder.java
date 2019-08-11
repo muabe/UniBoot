@@ -64,7 +64,7 @@ public class ListViewHolder implements HolderInterface{
     public EditText getEditText(int id){
         return (EditText) getView(id);
     }
-    public TextView getCheckBox(int id){
+    public CheckBox getCheckBox(int id){
         return (CheckBox) getView(id);
     }
 
