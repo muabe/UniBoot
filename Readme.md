@@ -13,6 +13,6 @@ allprojects {
 ### Add the dependency
 ```gragle
 dependencies {
-        compile 'com.github.muabe:UniBoot:v0.5.7'
+        implementation 'com.github.muabe:UniBoot:v0.5.7'
 }
 ```
