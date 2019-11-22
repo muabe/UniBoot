@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation 'com.markjmind.propose:propose:1.1.2'
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
-    implementation 'com.google.code.gson:gson:2.7'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
 //    implementation project(':uni')
 //    implementation 'org.jetbrains:annotations-java5:15.0'
