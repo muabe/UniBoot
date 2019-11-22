@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.7'
 
 //    implementation project(':uni')
-    implementation 'org.jetbrains:annotations-java5:15.0'
+//    implementation 'org.jetbrains:annotations-java5:15.0'
 
     implementation 'com.github.muabe:Uni:Uni-1.6.0'
 }
