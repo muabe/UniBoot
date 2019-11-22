@@ -5,8 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 /**
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 
 public class AutoPermission {
 
-    public ArrayList<String> getNames(Context context, @NotNull int... levels){
+    public ArrayList<String> getNames(Context context, int... levels){
         ArrayList<String> list = new ArrayList<>();
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = null;
