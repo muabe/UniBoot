@@ -1,3 +1,5 @@
 include ':uniboot'
-//include ':uni'
-//project(':uni').projectDir = new File('../Uni/uni')
+include ':uni'
+project(':uni').projectDir = new File('../Uni/uni')
+include ':bindtest'
+include ':bindprocess'
