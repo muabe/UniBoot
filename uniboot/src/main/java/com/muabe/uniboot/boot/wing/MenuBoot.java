@@ -2,7 +2,6 @@ package com.muabe.uniboot.boot.wing;
 
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -14,6 +13,8 @@ import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.muabe.uniboot.R;
+
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Created by MarkJ on 2016-10-29.
@@ -30,7 +31,7 @@ public class MenuBoot extends UniBoot {
 
     /************************************** Must implement ************************************/
 
-    public static MenuBoot get(Activity activity){
+    public static MenuBoot get(FragmentActivity activity){
         return UniBoot.get(activity, MenuBoot.class);
     }
 
@@ -38,13 +39,13 @@ public class MenuBoot extends UniBoot {
         return UniBoot.get(uniFragment.getActivity(), MenuBoot.class);
     }
 
-    public static MenuBoot putContentView(Activity activity){
+    public static MenuBoot putContentView(FragmentActivity activity){
         return UniBoot.putContentView(activity, MenuBoot.class);
     }
 
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(FragmentActivity activity) {
         setCustomLayout(R.layout.uni_boot_frame_sliding_menu_layout);
         MenuBoot.HOME = id.home;
         MenuBoot.LEFT = id.left;
@@ -104,7 +105,7 @@ public class MenuBoot extends UniBoot {
         });
     }
 
-    public static boolean onBackPressed(Activity activity){
+    public static boolean onBackPressed(FragmentActivity activity){
         MenuBoot boot = MenuBoot.get(activity);
         return boot.onBackPressed();
     }
