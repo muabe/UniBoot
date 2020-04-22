@@ -2,4 +2,4 @@ include ':uniboot'
 include ':uni'
 project(':uni').projectDir = new File('../Uni/uni')
 include ':bindtest'
-include ':bindprocess'
+include ':ModelBinder'

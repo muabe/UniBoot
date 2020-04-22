@@ -12,8 +12,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -27,24 +26,44 @@ android {
         enabled = true
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+//    configurations.all {
+//        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+//            def requested = details.requested
+//            if (requested.group == "com.android.support") {
+//                if (!requested.name.startsWith("multidex")) {
+//                    details.useVersion "26.+"
+//                }
+//            }
+//        }
+//    }
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+
 }
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == "com.android.support") {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion "26.+"
-            }
-        }
-    }
-}
+
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:29.0.0'
     implementation project(':uni')
     implementation project(path: ':uniboot')
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
+    implementation ('com.markjmind.propose:propose:1.1.+')
+
+//    implementation "com.skt.invites.tdna:tdnaVo:4.0.0"
+
+
+    annotationProcessor project(':ModelBinder')
+    implementation project(path: ':ModelBinder')
+
+
+
 }

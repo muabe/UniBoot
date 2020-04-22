@@ -4,6 +4,9 @@
         <variable
             name="model"
             type="com.muabe.bindtest.obserable.AObservable" />
+        <variable
+            name="map"
+            type="com.muabe.bindtest.obserable.ModelNamed" />
     </data>
     <FrameLayout  android:layout_width="match_parent" android:layout_height="match_parent">
             <TextView
@@ -13,11 +16,25 @@
                 android:text="@{model.name}" />
 
         <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@{model.name2}" />
+
+        <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@{model.age}" />
+            android:text='@{map.data["age"]}' />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:text='@{map.uservo["user"].name}' />
     </FrameLayout>
 
 </layout>

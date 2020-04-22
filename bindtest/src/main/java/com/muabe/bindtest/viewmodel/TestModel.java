@@ -1,6 +1,11 @@
 package com.muabe.bindtest.viewmodel;
 
-public class TestModel {
+import com.muabe.modelbinder.annotation.ModelBinder;
+
+import java.util.ArrayList;
+
+@ModelBinder
+public class TestModel extends ArrayList {
     private String name;
     private int age;
 
