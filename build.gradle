@@ -33,6 +33,7 @@ allprojects {
     repositories {
         google()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://raw.github.com/invites-healthcare/TDNA-VO-REPO/master' }
         jcenter()
     }
 }

@@ -47,6 +47,9 @@ public class BaseDecl {
         return elemUtils;
     }
 
+    public Filer getFiler(){
+        return filer;
+    }
 
     protected JCTree.JCExpression makeSelectExpr(TreeMaker maker, String select) {
         String[] parts = select.split("\\.");

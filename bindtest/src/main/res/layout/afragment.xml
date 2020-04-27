@@ -3,7 +3,7 @@
     <data>
         <variable
             name="model"
-            type="com.muabe.bindtest.obserable.AObservable" />
+            type="com.muabe.bindtest.vo.cmm.vo.CodeVO" />
         <variable
             name="map"
             type="com.muabe.bindtest.obserable.ModelNamed" />
@@ -13,14 +13,14 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{model.name}" />
+                android:text="@{model.codeName}" />
 
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="@{model.name2}" />
+            android:text="@{model.codeName}" />
 
         <TextView
             android:id="@+id/textView2"

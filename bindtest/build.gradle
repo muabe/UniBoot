@@ -42,28 +42,21 @@ android {
 //        }
 //    }
 
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
-
+//    configurations.all {
+//        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//    }
 }
-
 
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:29.0.0'
     implementation project(':uni')
     implementation project(path: ':uniboot')
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
-    implementation ('com.markjmind.propose:propose:1.1.+')
+    implementation 'com.android.support:appcompat-v7:29.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'com.markjmind.propose:propose:1.1.2'
 
-//    implementation "com.skt.invites.tdna:tdnaVo:4.0.0"
-
-
-    annotationProcessor project(':ModelBinder')
-    implementation project(path: ':ModelBinder')
-
+    //    implementation "com.skt.invites.tdna:tdnaVo:4.0.0"
 
 
 }

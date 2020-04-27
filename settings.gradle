@@ -3,3 +3,4 @@ include ':uni'
 project(':uni').projectDir = new File('../Uni/uni')
 include ':bindtest'
 include ':ModelBinder'
+include ':ModelConvert'

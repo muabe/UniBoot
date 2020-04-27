@@ -9,19 +9,19 @@ import com.markjmind.uni.thread.CancelAdapter
 import com.markjmind.uni.thread.LoadEvent
 import com.muabe.bindtest.R
 import com.muabe.bindtest.databinding.AfragmentBinding
-
+import com.muabe.bindtest.vo.cmm.vo.CodeVO
 
 @Progress(mode = UniProgress.VIEW, res = R.layout.progress)
 class AFragment : BaseFragment(){
     @Binder
     lateinit var binding : AfragmentBinding
-    val observable : AObservable = AObservable()
     val map : ModelNamed = ModelNamed()
+    val observable : CodeVO = CodeVO()
 
     override fun onPre() {
 
 //        observable.set("name", "hi")
-//        observable.name2 = "dd"
+        observable.codeName = "dd"
         binding.model = observable
 
         map.data.put("age", "sldkjfsldkjf")
@@ -35,7 +35,7 @@ class AFragment : BaseFragment(){
     }
 
     override fun onPost() {
-//        observable.name2 = "2222"
+        observable.codeName = "2222"
         map.data.put("age", "ddddddddddddddddddd")
 //        map.intData.put(R.id.textView2, "ssss");
         map.uservo.get("user")?.name = "5555555"

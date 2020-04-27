@@ -26,8 +26,12 @@ public class ClassDecl extends BaseDecl {
     public ClassDecl(ProcessingEnvironment processingEnv, TypeElement typeElement){
         super(processingEnv);
         this.typeElement = typeElement;
-        classDecl = (JCTree.JCClassDecl)elemUtils.getTree(typeElement);
-        getMaker().pos = classDecl.pos;
+        if(elemUtils != null){
+            classDecl = (JCTree.JCClassDecl)elemUtils.getTree(typeElement);
+            if(classDecl != null) {
+                getMaker().pos = classDecl.pos;
+            }
+        }
     }
 
     protected ClassDecl(ClassDecl decl){
@@ -86,6 +90,7 @@ public class ClassDecl extends BaseDecl {
     private JCTree.JCExpression returnType(String returnType){
         try {
             if("void".equals(returnType)) {
+//                JCExpression returnType = mTreeMaker.TypeIdent(TypeTags.VOID);
                 return maker.Type((Type) (Class.forName("com.sun.tools.javac.code.Type$JCVoidType").newInstance()));
             }else{
                 return maker.Type((Type) (Class.forName(returnType).newInstance()));
@@ -97,7 +102,8 @@ public class ClassDecl extends BaseDecl {
 
     public JCTree.JCVariableDecl createField(String modifierString, String typeName, String name){
         getMaker().pos = classDecl.pos;
-        JCTree.JCModifiers modifier = getMaker().Modifiers(stringToModifier(modifierString));
+        JCTree.JCModifiers modifier = getMaker()
+                .Modifiers(stringToModifier(modifierString)| Flags.STATIC);
         JCTree.JCExpression type = makeSelectExpr(maker, typeName);
         Name fieldName = elemUtils.getName(name);
 
@@ -114,7 +120,7 @@ public class ClassDecl extends BaseDecl {
     }
 
 
-    public void addSetterMethod(String modifier, String methodName, String paramType, String paramName){
+    public void addSetterMethod(String packageName, String modifier, String methodName, String paramType, String paramName){
         ListBuffer<JCTree.JCStatement> code = new ListBuffer<>();
         // this.paramName=paramName; assign:값할당 코드
         code.append(
@@ -128,6 +134,12 @@ public class ClassDecl extends BaseDecl {
                             )
                         );
 
+
+        //                .beginControlFlow("try")
+//                .addStatement("notifyPropertyChanged((int)Class.forName($S).getDeclaredField(\"$N\").get(null))"
+//                        ,"com.muabe.modelconvert.BR", fieldName)
+//                .nextControlFlow("catch ($T e)", Exception.class)
+//                .addStatement("throw new $T(e)", RuntimeException.class)
 
         //this.notifyPropertyChanged(BR.methodName);
         code.append(maker.Exec(maker.Apply(

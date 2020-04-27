@@ -27,7 +27,7 @@ public class FieldDecl extends BaseDecl {
     }
 
     public String getName(){
-        return variableDecl.getName().toString();
+        return variableElement.getSimpleName().toString();
     }
 
     public void addAnnotation(String annotationClassName){
@@ -38,5 +38,33 @@ public class FieldDecl extends BaseDecl {
 
     public JCTree.JCExpression getType(){
         return variableDecl.vartype;
+    }
+
+    public Class<?> getTypeClass(){
+        String typeName = variableElement.asType().toString();
+        try {
+            if(typeName.equals("int")){
+                return int.class;
+            }else if(typeName.equals("long")){
+                return long.class;
+            }else if(typeName.equals("float")){
+                return float.class;
+            }else if(typeName.equals("double")){
+                return double.class;
+            }else if(typeName.equals("String")){
+                return String.class;
+            }else if(typeName.equals("short")){
+                return short.class;
+            }else if(typeName.equals("byte")){
+                return byte.class;
+            }else if(typeName.equals("boolean")){
+                return boolean.class;
+            }
+
+            return ClassLoader.getSystemClassLoader().loadClass(typeName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }
