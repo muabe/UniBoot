@@ -29,9 +29,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 
 @SupportedAnnotationTypes({
         "com.muabe.modelbinder.annotation.PackageClassBinder"
@@ -46,7 +43,6 @@ public class VoToBindProcessor extends AbstractProcessor {
         super.init(processingEnvironment);
         util = new BaseDecl(processingEnv);
         genPackage = processingEnvironment.getOptions().get("outputPackage");
-
     }
 
 
@@ -56,7 +52,6 @@ public class VoToBindProcessor extends AbstractProcessor {
             for (Element element : roundEnvironment.getRootElements()) {
                 if (element.getKind().equals(ElementKind.CLASS)) {
                     if(element.getAnnotation(PackageClassBinder.class) !=null ){
-
                         util.println("------------ Start Processor : -------------");
                         System.out.println("PackageClassBinder : "+ element.getSimpleName());
                         ClassDecl classDecl = new ClassDecl(processingEnv, (TypeElement) element);
@@ -68,61 +63,12 @@ public class VoToBindProcessor extends AbstractProcessor {
                                 for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
                                     String key = entry.getKey().getSimpleName().toString();
                                     if(key.equals("value")){
-                                        bind(classDecl, (com.sun.tools.javac.util.List<?>)(entry.getValue().getValue()));
+                                        jarBind(classDecl, (com.sun.tools.javac.util.List<?>)(entry.getValue().getValue()));
                                     }
                                 }
                             }
                         }
                     }
-
-                    if(element.getAnnotation(ViewModel.class) != null ){
-                        util.println("ViewModel : "+ element.getSimpleName());
-                        ClassDecl classDecl = new ClassDecl(processingEnv, (TypeElement) element);
-                        TypeMirror superType = ((TypeElement) element).getSuperclass();
-                        String superClass = null;
-                        // Looping the inheritance hierarchy to check if the element inherits at least one of the super
-                        // classes specified.
-                        while (!"none".equals(superType.toString())) {
-                            Element superTypeElement = ((DeclaredType) superType).asElement();
-
-                            superClass = superTypeElement.toString();
-                            util.println("superClass : "+superClass);
-//                            ClassDecl classDecl = new ClassDecl(processingEnv, (TypeElement) superTypeElement);
-//                            HashMap<String, FieldDecl> map = classDecl.getFieldMap();
-                            if("androidx.databinding.BaseObservable".equals(superClass) || "java.lang.Object".equals(superClass)){
-                                break;
-                            }
-                            for(Element el : superTypeElement.getEnclosedElements()){
-                                if(el.getKind().equals(ElementKind.FIELD)){
-                                    VariableElement variableElement = (VariableElement)el;
-                                    util.println("field : "+variableElement.getSimpleName());
-                                    for(AnnotationMirror mirror : variableElement.getAnnotationMirrors()){
-                                        if("androidx.databinding.Bindable".equals(mirror.getAnnotationType().toString())){
-//                                            classDecl.addSetterMethod("com.muabe.modelconvert","public", variableElement.getSimpleName().toString(), variableElement.asType().toString(), variableElement.getSimpleName().toString());
-                                            break;
-                                        }
-                                    }
-                                }
-
-                            }
-                            superType = ((TypeElement) superTypeElement).getSuperclass();
-                        }
-                    }
-
-
-
-
-
-//                    else if(c.getAnnotationFilter() == null || element.getAnnotation(c.getAnnotationFilter()) !=null) {
-//                        ClassDecl classDecl = new ClassDecl(processingEnv, (TypeElement) element);
-//                            util.println("Load Class(" + c.getAnnotationFilter() + ") = " + classDecl.getCanonicalName());
-//                        if(classDecl.getJCClassDecl().extending != null){
-//                            util.println(classDecl.getJCClassDecl().extending.toString());
-//                        }else{
-//                            util.println("None Extends");
-//                        }
-//                        c.onProcess(classDecl);
-//                    }
                 } else if (element.getKind().equals(ElementKind.INTERFACE)) {
                     //Interface일 경
                 }
@@ -131,6 +77,34 @@ public class VoToBindProcessor extends AbstractProcessor {
         }
         return false;
     }
+
+    private void jarBind(ClassDecl classDecl, com.sun.tools.javac.util.List<?> values){
+        for(Object value : values){
+            String loadPackage = value.toString().replaceAll("\"", "");
+            List<Class<?>> classes = Utils.getJarClasses(getClass().getClassLoader(), loadPackage);
+
+            for(Class<?> clazz : classes){
+                String packageName = genPackage +".vo"+clazz.getCanonicalName().replaceAll("."+clazz.getSimpleName(), "").replaceAll(loadPackage, "");
+
+                TypeName extendsType = null;
+
+                if(!clazz.getSuperclass().equals(Object.class)){
+                    String superType = clazz.getSuperclass().getCanonicalName();
+                    String pack = superType.substring(0,superType.lastIndexOf("."));
+                    String name = superType.replaceAll(pack+".","");
+                    pack = genPackage +".vo"+pack.replaceAll(loadPackage, "");
+                    extendsType = ClassName.get(pack, name);
+                }
+
+                Coder.makeBindable(classDecl.getFiler(),
+                        packageName,
+                        clazz.getSimpleName(),
+                        extendsType,
+                        clazz.getDeclaredFields());
+            }
+        }
+    }
+
 
     private void bind(ClassDecl classDecl, com.sun.tools.javac.util.List<?> values){
         for(Object value : values){

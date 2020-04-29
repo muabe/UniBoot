@@ -1,3 +1,17 @@
+package com.muabe.modelbinder;
+
+import com.muabe.modelbinder.annotation.PackageClassBinder;
+
+@PackageClassBinder({
+        "com.skt.invites.tdna"
+})
+public class Example {
+}
+
+/** build.gradle
+
+
+
 apply plugin: 'java'
 
 //configurations.all {
@@ -32,3 +46,5 @@ dependencies {
     implementation "com.skt.invites.tdna:tdnaVo:+"
 }
 
+
+ **/

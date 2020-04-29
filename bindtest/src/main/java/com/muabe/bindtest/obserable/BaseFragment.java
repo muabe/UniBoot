@@ -9,11 +9,11 @@ import com.markjmind.uni.UniFragment;
 
 public class BaseFragment extends UniFragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
 //
 //    @Override
 //    public void onViewCreated(View view, Bundle savedInstanceState) {
