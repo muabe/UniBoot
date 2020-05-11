@@ -16,6 +16,7 @@ public class Utils {
 
     public static List<Class<?>> getJarClasses(ClassLoader classLoader, String packageName){
         String path = packageName.replace('.', '/');
+
         try {
             Enumeration<URL> resources = classLoader.getResources(path);
             while (resources.hasMoreElements()) {
@@ -23,11 +24,12 @@ public class Utils {
                 Map<String, List<Class<?>>> map = Utils.loadAndScanJar(classLoader, new File(resource.getPath().replaceAll("!/"+path, "").replaceAll("file:", "")));
                 return map.get("classes");
             }
+            throw new RuntimeException("Jar file 못찾음("+path+")");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return null;
+
     }
 
     public static Map<String, List<Class<?>>> loadAndScanJar(ClassLoader classLoader, File jarFile) {
