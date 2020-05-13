@@ -279,6 +279,7 @@ public class MenuBoot extends UniBoot {
 
         private Propose getLeftSldingAnimation() {
             final Propose propose = new Propose(view.left.getContext());
+            propose.setAutoCancel(false);
 
             ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, -windowSize.x, leftWing.getWidth()-windowSize.x).setDuration(500);
             ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
@@ -339,6 +340,7 @@ public class MenuBoot extends UniBoot {
 
         private Propose getRightSldingAnimation() {
             final Propose propose = new Propose(view.right.getContext());
+            propose.setAutoCancel(false);
 
             ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.right, View.TRANSLATION_X, windowSize.x, windowSize.x-rightWing.getWidth()).setDuration(500);
             ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
