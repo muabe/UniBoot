@@ -71,6 +71,8 @@ public class JsonWeb {
     protected boolean debug = true;
     private Call call;
 
+    private OnResultListener resultListener;
+
     public enum METHOD{
         POST,PUT,DELETE,PATCH
     }
@@ -138,7 +140,7 @@ public class JsonWeb {
 
     }
 
-    protected <ResultType extends WebResultAdapter>ResultType GET(Class<ResultType> resultType) throws IOException, WebException {
+    protected WebResult GET() throws IOException, WebException {
         HttpUrl.Builder builder = HttpUrl.parse(getFullUrl()).newBuilder();
         String[] keys = getParamKeys();
         for (String key : keys) {
@@ -155,15 +157,15 @@ public class JsonWeb {
         clearAllParams();
         call = client.newCall(request);
         Response response = call.execute();
-        ResultType result = getResult(response, resultType);
+        WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
-        unexpectedCode(response, result.getBody());
+        unexpectedCode(response, result);
         return result;
     }
 
 
 
-    private <ResultType extends WebResultAdapter>ResultType POST(METHOD method, String text, Class<ResultType> resultType) throws IOException, WebException {
+    private WebResult POST(METHOD method, String text) throws IOException, WebException {
         Request.Builder reqestBuilder = new Request.Builder();
         addHeaderAll(reqestBuilder);
         if(text == null){
@@ -178,14 +180,14 @@ public class JsonWeb {
         clearAllParams();
         call = client.newCall(request);
         Response response = call.execute();
-        ResultType result = getResult(response, resultType);
+        WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
-        unexpectedCode(response, result.getBody());
+        unexpectedCode(response, result);
 
         return result;
     }
 
-    private <ResultType extends WebResultAdapter>ResultType FORM(Class<ResultType> resultType) throws WebException, IOException {
+    private WebResult FORM() throws WebException, IOException {
 
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
@@ -208,16 +210,13 @@ public class JsonWeb {
         clearAllParams();
         call = client.newCall(request);
         Response response = call.execute();
-        ResultType result = getResult(response, resultType);
+        WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
-        unexpectedCode(response, result.getBody());
+        unexpectedCode(response, result);
         return result;
     }
 
-    public <ResultType extends WebResultAdapter>ResultType MULTIPART(METHOD method, Class<ResultType> resultType) throws WebException, IOException {
-        if (method == null) {
-            method = METHOD.POST;
-        }
+    public WebResult MULTIPART() throws WebException, IOException {
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
                 .cacheControl(new CacheControl.Builder().noCache().build());
@@ -242,53 +241,53 @@ public class JsonWeb {
                             RequestBody.create(MEDIA_TYPE_IMAGE, file.get(key)));
         }
 
-        Request request = initMethod(method, reqestBuilder, body.build());
+        Request request = initMethod(METHOD.POST, reqestBuilder, body.build());
         debugRequest("MULTIPART", paramString);
 
         clearAllParams();
         call = client.newCall(request);
         Response response = call.execute();
-        ResultType result = getResult(response, resultType);
+        WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
-        unexpectedCode(response, result.getBody());
+        unexpectedCode(response, result);
         return result;
     }
 
     public WebResult POST(String json_text) throws IOException, WebException {
-        return POST(METHOD.POST, json_text, WebResult.class);
+        return POST(METHOD.POST, json_text);
     }
 
     public WebResult POST(Object dataParam) throws IOException, WebException {
-        return POST(METHOD.POST, getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.POST, getRequestGson().toJson(dataParam));
     }
 
     public WebResult PUT(Object dataParam) throws IOException, WebException {
-        return POST(METHOD.PUT, getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.PUT, getRequestGson().toJson(dataParam));
     }
 
     public WebResult DELETE(Object dataParam) throws IOException, WebException {
-        return POST(METHOD.DELETE, getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.DELETE, getRequestGson().toJson(dataParam));
     }
 
     public WebResult PATCH(Object dataParam) throws IOException, WebException {
-        return POST(METHOD.PATCH, getRequestGson().toJson(dataParam), WebResult.class);
+        return POST(METHOD.PATCH, getRequestGson().toJson(dataParam));
     }
 
 
-    public WebResult GET() throws IOException, WebException {
-        return GET(WebResult.class);
-    }
+//    public WebResult GET() throws IOException, WebException {
+//        return GET(WebResult.class);
+//    }
 
-    public WebResult FORM() throws IOException, WebException {
-        return FORM(WebResult.class);
-    }
+//    public WebResult FORM() throws IOException, WebException {
+//        return FORM(WebResult.class);
+//    }
 
     public WebResult POST() throws IOException, WebException {
         String text = "";
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return POST(METHOD.POST, text, WebResult.class);
+        return POST(METHOD.POST, text);
     }
 
     public WebResult PUT() throws IOException, WebException {
@@ -296,7 +295,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return POST(METHOD.PUT, text, WebResult.class);
+        return POST(METHOD.PUT, text);
     }
 
     public WebResult DELETE() throws IOException, WebException {
@@ -304,7 +303,7 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return POST(METHOD.DELETE, text , WebResult.class);
+        return POST(METHOD.DELETE, text);
     }
 
     public WebResult PATCH() throws IOException, WebException {
@@ -312,17 +311,8 @@ public class JsonWeb {
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
         }
-        return POST(METHOD.PATCH, text, WebResult.class);
+        return POST(METHOD.PATCH, text);
     }
-
-    public WebResult MULTIPART() throws IOException, WebException {
-        return MULTIPART(null, WebResult.class);
-    }
-
-
-
-
-
 
     public Request initMethod(METHOD method, Request.Builder reqestBuilder, RequestBody body) {
         Request request;
@@ -349,6 +339,10 @@ public class JsonWeb {
             return new String[0];
         }
         return keys;
+    }
+
+    public void setOnResultListener(OnResultListener resultListener){
+        this.resultListener = resultListener;
     }
 
     public static String sha1(String s) {
@@ -411,12 +405,19 @@ public class JsonWeb {
         byte[] bytes = cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8));
         return new String(bytes);
     }
-
-    private void unexpectedCode(Response response, String bodyString) throws WebException {
+    private void unexpectedCode(Response response, WebResult result) throws WebException {
         if (!response.isSuccessful()) {
             Log.e(this.getClass().getSimpleName(), "Server Response Error Unexpected code:" + response.code());
             Log.e(this.getClass().getSimpleName(), response.message());
-            throw new WebException(response, bodyString, "Unexpected code " + response);
+            throw new WebException(WebException.UNEXPECTED_CODE, result, "Unexpected code " + response);
+        }else if(response.code() != 200){
+            Log.e(this.getClass().getSimpleName(), "Server Response Error Not 200 code:" + response.code());
+            Log.e(this.getClass().getSimpleName(), response.message());
+            throw new WebException(WebException.NOT_200_CODE, result, "Not 200 code " + response);
+        }else if(resultListener != null && !resultListener.onResult(result)){
+            Log.e(this.getClass().getSimpleName(), "Custom Response Error:" + response.code());
+            Log.e(this.getClass().getSimpleName(), ""+response.message());
+            throw new WebException(WebException.CUSTOM_RESPONSE_ERROR_CODE, result, "Custom Response Error " + response);
         }
     }
 

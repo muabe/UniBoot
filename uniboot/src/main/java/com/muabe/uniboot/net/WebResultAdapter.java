@@ -21,4 +21,11 @@ public class WebResultAdapter {
         return this.bodyString;
     }
 
+    public int getCode(){
+        if(response != null) {
+            return response.code();
+        }else{
+            return -1;
+        }
+    }
 }
