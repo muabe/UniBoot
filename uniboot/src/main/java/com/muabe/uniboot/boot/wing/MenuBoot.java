@@ -25,7 +25,8 @@ public class MenuBoot extends UniBoot {
     public static int LEFT;
     public static int RIGHT;
 
-    private FrameLayout blur, left_touch, right_touch;
+    private FrameLayout left, right, blur, left_touch, right_touch;
+
     private WingOption leftWing;
     private WingOption rightWing;
 
@@ -52,6 +53,9 @@ public class MenuBoot extends UniBoot {
         MenuBoot.RIGHT = id.right;
 
         blur = activity.findViewById(R.id.uni_boot_frame_sliding_menu_blur);
+        left = activity.findViewById(MenuBoot.LEFT);
+        right = activity.findViewById(MenuBoot.RIGHT);
+        left_touch = activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
         left_touch = activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_left);
         right_touch = activity.findViewById(R.id.uni_boot_frame_sliding_menu_touch_area_right);
 
@@ -320,9 +324,11 @@ public class MenuBoot extends UniBoot {
                     blur.setClickable(false);
                     if(isOpen) {
                         blur.setOnTouchListener(propose);
+                        left.setOnTouchListener(propose);
                         motion.enableSingleTabUp(true);
                     }else{
                         blur.setOnTouchListener(null);
+                        left.setOnTouchListener(null);
                         motion.enableSingleTabUp(false);
                     }
                 }
@@ -377,9 +383,11 @@ public class MenuBoot extends UniBoot {
                     rightWing.setOpened(isOpen);
                     blur.setClickable(false);
                     if(isOpen) {
+                        right.setOnTouchListener(propose);
                         blur.setOnTouchListener(propose);
                         motion.enableSingleTabUp(true);
                     }else{
+                        right.setOnTouchListener(propose);
                         blur.setOnTouchListener(null);
                         motion.enableSingleTabUp(false);
                     }
