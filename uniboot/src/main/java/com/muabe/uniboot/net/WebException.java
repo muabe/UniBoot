@@ -90,6 +90,10 @@ public class WebException extends Exception  {
         return this.response;
     }
 
+    public int getCode(){
+        return this.response.code();
+    }
+
     public String getBodyString(){
         return body;
     }

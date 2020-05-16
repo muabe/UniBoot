@@ -24,6 +24,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -140,7 +142,7 @@ public class JsonWeb {
 
     }
 
-    protected WebResult GET() throws IOException, WebException {
+    public WebResult GET() throws IOException, WebException, JSONException {
         HttpUrl.Builder builder = HttpUrl.parse(getFullUrl()).newBuilder();
         String[] keys = getParamKeys();
         for (String key : keys) {
@@ -165,7 +167,7 @@ public class JsonWeb {
 
 
 
-    private WebResult POST(METHOD method, String text) throws IOException, WebException {
+    private WebResult POST(METHOD method, String text) throws IOException, WebException, JSONException {
         Request.Builder reqestBuilder = new Request.Builder();
         addHeaderAll(reqestBuilder);
         if(text == null){
@@ -187,7 +189,7 @@ public class JsonWeb {
         return result;
     }
 
-    private WebResult FORM() throws WebException, IOException {
+    private WebResult FORM() throws WebException, IOException, JSONException {
 
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
@@ -216,7 +218,7 @@ public class JsonWeb {
         return result;
     }
 
-    public WebResult MULTIPART() throws WebException, IOException {
+    public WebResult MULTIPART() throws WebException, IOException, JSONException {
         Request.Builder reqestBuilder = new Request.Builder()
                 .url(getFullUrl())
                 .cacheControl(new CacheControl.Builder().noCache().build());
@@ -253,23 +255,23 @@ public class JsonWeb {
         return result;
     }
 
-    public WebResult POST(String json_text) throws IOException, WebException {
+    public WebResult POST(String json_text) throws IOException, WebException, JSONException {
         return POST(METHOD.POST, json_text);
     }
 
-    public WebResult POST(Object dataParam) throws IOException, WebException {
+    public WebResult POST(Object dataParam) throws IOException, WebException, JSONException {
         return POST(METHOD.POST, getRequestGson().toJson(dataParam));
     }
 
-    public WebResult PUT(Object dataParam) throws IOException, WebException {
+    public WebResult PUT(Object dataParam) throws IOException, WebException, JSONException {
         return POST(METHOD.PUT, getRequestGson().toJson(dataParam));
     }
 
-    public WebResult DELETE(Object dataParam) throws IOException, WebException {
+    public WebResult DELETE(Object dataParam) throws IOException, WebException, JSONException {
         return POST(METHOD.DELETE, getRequestGson().toJson(dataParam));
     }
 
-    public WebResult PATCH(Object dataParam) throws IOException, WebException {
+    public WebResult PATCH(Object dataParam) throws IOException, WebException, JSONException {
         return POST(METHOD.PATCH, getRequestGson().toJson(dataParam));
     }
 
@@ -282,7 +284,7 @@ public class JsonWeb {
 //        return FORM(WebResult.class);
 //    }
 
-    public WebResult POST() throws IOException, WebException {
+    public WebResult POST() throws IOException, WebException, JSONException {
         String text = "";
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
@@ -290,7 +292,7 @@ public class JsonWeb {
         return POST(METHOD.POST, text);
     }
 
-    public WebResult PUT() throws IOException, WebException {
+    public WebResult PUT() throws IOException, WebException, JSONException {
         String text = "";
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
@@ -298,7 +300,7 @@ public class JsonWeb {
         return POST(METHOD.PUT, text);
     }
 
-    public WebResult DELETE() throws IOException, WebException {
+    public WebResult DELETE() throws IOException, WebException, JSONException {
         String text = "";
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
@@ -306,7 +308,7 @@ public class JsonWeb {
         return POST(METHOD.DELETE, text);
     }
 
-    public WebResult PATCH() throws IOException, WebException {
+    public WebResult PATCH() throws IOException, WebException, JSONException {
         String text = "";
         if(param.size() > 0){
             text = getRequestGson().toJson(param);
@@ -405,7 +407,7 @@ public class JsonWeb {
         byte[] bytes = cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8));
         return new String(bytes);
     }
-    private void unexpectedCode(Response response, WebResult result) throws WebException {
+    private void unexpectedCode(Response response, WebResult result) throws WebException, JSONException {
         if (!response.isSuccessful()) {
             Log.e(this.getClass().getSimpleName(), "Server Response Error Unexpected code:" + response.code());
             Log.e(this.getClass().getSimpleName(), response.message());

@@ -186,6 +186,8 @@ public class MenuBoot extends UniBoot {
         public void setEnable(boolean enable){
             this.enable = enable;
             if(enable){
+                menu.getLayoutParams().width = width;
+                menu.setX(-width);
                 touch.setVisibility(View.VISIBLE);
                 menu.setVisibility(View.VISIBLE);
                 animationInfo = new AnimationInfo(isLeft);
@@ -281,7 +283,7 @@ public class MenuBoot extends UniBoot {
             final Propose propose = new Propose(view.left.getContext());
             propose.setAutoCancel(false);
 
-            ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, -windowSize.x, leftWing.getWidth()-windowSize.x).setDuration(500);
+            ObjectAnimator leftSliding = ObjectAnimator.ofFloat(view.left, View.TRANSLATION_X, -leftWing.getWidth(), 0).setDuration(500);
             ObjectAnimator blurAnim = ObjectAnimator.ofFloat(blur, View.ALPHA, 0f, 1f).setDuration(500);
 //            propose.setFlingMinAccelerator(3.0f);
 
