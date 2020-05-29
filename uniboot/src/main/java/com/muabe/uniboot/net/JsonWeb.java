@@ -1,5 +1,7 @@
 package com.muabe.uniboot.net;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
@@ -12,7 +14,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.muabe.uniboot.log.Loger;
+import com.markjmind.uni.common.Jwc;
+import com.markjmind.uni.common.Loger;
 import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -90,6 +93,21 @@ public class JsonWeb {
         this.setHost(host);
     }
 
+
+    @SuppressLint("MissingPermission")
+    public static boolean isConnectNetwork(Context context) {
+        return Jwc.isConnectNetwork(context);
+    }
+
+    @SuppressLint("MissingPermission")
+    public static boolean isWifi(Context context){
+        return Jwc.isWifi(context);
+    }
+
+    public static String getMacAddress(){
+        return Jwc.getMacAddress();
+    }
+
     public JsonWeb setDebug(boolean debug) {
         this.debug = debug;
         return this;
@@ -120,6 +138,14 @@ public class JsonWeb {
     public JsonWeb setTimeOut(int seconds){
         client.setConnectTimeout(seconds, TimeUnit.SECONDS); // connect timeout
         client.setReadTimeout(seconds, TimeUnit.SECONDS);
+        return this;
+    }
+
+    public JsonWeb checkNetwork(Context context) throws WebException {
+        boolean isConnection = isConnectNetwork(context);
+        if(!isConnection){
+            throw new WebException(WebException.DISCONNECT_INTERNET_CODE, "Disconnected Internet");
+        }
         return this;
     }
 
@@ -408,11 +434,13 @@ public class JsonWeb {
         return new String(bytes);
     }
     private void unexpectedCode(Response response, WebResult result) throws WebException, JSONException {
-        if (!response.isSuccessful()) {
-            Log.e(this.getClass().getSimpleName(), "Server Response Error Unexpected code:" + response.code());
-            Log.e(this.getClass().getSimpleName(), response.message());
-            throw new WebException(WebException.UNEXPECTED_CODE, result, "Unexpected code " + response);
-        }else if(response.code() != 200){
+//        if (!response.isSuccessful()) {
+//            Log.e(this.getClass().getSimpleName(), "Server Response Error Unexpected code:" + response.code());
+//            Log.e(this.getClass().getSimpleName(), response.message());
+//            throw new WebException(WebException.UNEXPECTED_CODE, result, "Unexpected code " + response);
+//        }else
+
+        if(response.code() != 200){
             Log.e(this.getClass().getSimpleName(), "Server Response Error Not 200 code:" + response.code());
             Log.e(this.getClass().getSimpleName(), response.message());
             throw new WebException(WebException.NOT_200_CODE, result, "Not 200 code " + response);
@@ -626,7 +654,7 @@ public class JsonWeb {
         if (debug) {
             Log.w(this.getClass().getSimpleName(), " ");
             Log.w(this.getClass().getSimpleName(), "----------------------------------------------------------------------------------------------------------");
-            Log.d(this.getClass().getSimpleName(), "★ API Call : " + Loger.callLibrary(this.getClass())+" ★");
+            Log.d(this.getClass().getSimpleName(), "★ API Call : " + Loger.callLibrary(getClass())+" ★");
             Log.i(this.getClass().getSimpleName(), "○ [Request] " + method + " : " + getFullUrl());
             String[] headerKeys = getHeaderKeys();
             if (headerKeys.length > 0) {

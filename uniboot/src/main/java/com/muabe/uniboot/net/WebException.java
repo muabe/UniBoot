@@ -38,13 +38,11 @@ public class WebException extends Exception  {
 //    }
 //
 //
-//    public WebException(int errorCode, Response response, String body, String message, Throwable exception) {
-//        super(message, exception);
-//        this.response = response;
-//        this.message = message;
-//        this.exception = exception;
-//        this.body = body;
-//    }
+    public WebException(int errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+        this.message = message;
+    }
 
     public WebException(int errorCode, WebResult webResult, String message, Throwable exception) {
         super(message, exception);
