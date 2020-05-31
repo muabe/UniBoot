@@ -3,6 +3,8 @@ package com.muabe.uniboot.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Map;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -76,6 +78,11 @@ public class JwPreference {
     public long getLong(String key, long opt){
         SharedPreferences prefs = context.getSharedPreferences(preferenceName, preferenceMode);
         return prefs.getLong(key, opt);
+    }
+
+    public Map<String, ?> getAll(){
+        SharedPreferences prefs = context.getSharedPreferences(preferenceName, preferenceMode);
+        return prefs.getAll();
     }
 
     public Context getContext(){
