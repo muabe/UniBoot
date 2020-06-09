@@ -22,6 +22,7 @@ public abstract class WebCatchHelper extends CatchException{
 
     public WebCatchHelper(){
         addException(WebException.class, webException);
+        addException(JSONException.class, jsonException);
         addException(HttpRetryException.class, httpRetryException);
         addException(SocketTimeoutException.class, socketTimeoutException);
         addException(MalformedURLException.class, malformedURLException);
@@ -43,8 +44,8 @@ public abstract class WebCatchHelper extends CatchException{
     protected abstract void not200Exception(WebException e);
     //    protected abstract void unexpectedCodeException(WebException e);
     protected abstract void customResponseCodeException(WebException e);
-    protected abstract void jsonException(JSONException e);
 
+    protected abstract void jsonException(JSONException e);
     protected abstract void socketTimeoutException(SocketTimeoutException e);
     protected abstract void malformedURLException(MalformedURLException e);
     protected abstract void protocolException(ProtocolException e);
