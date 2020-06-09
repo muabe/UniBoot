@@ -60,11 +60,19 @@ public class VoToBindProcessor extends AbstractProcessor {
                         for (AnnotationMirror mirror : annotationMirrors) {
                             if (PackageClassBinder.class.getCanonicalName().equals(mirror.getAnnotationType().toString())) {
                                 Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
+                                com.sun.tools.javac.util.List<?> valueList = null;
+                                com.sun.tools.javac.util.List<?> ignoreList = null;
                                 for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
                                     String key = entry.getKey().getSimpleName().toString();
-                                    if(key.equals("value")){
-                                        jarBind(classDecl, (com.sun.tools.javac.util.List<?>)(entry.getValue().getValue()));
+                                    if(key.equals("ignore")){
+                                        ignoreList = (com.sun.tools.javac.util.List<?>)(entry.getValue().getValue());
                                     }
+                                    if(key.equals("value")){
+                                        valueList = (com.sun.tools.javac.util.List<?>)(entry.getValue().getValue());
+                                    }
+                                }
+                                if(valueList != null){
+                                    jarBind(classDecl,valueList, ignoreList);
                                 }
                             }
                         }
@@ -78,14 +86,27 @@ public class VoToBindProcessor extends AbstractProcessor {
         return false;
     }
 
-    private void jarBind(ClassDecl classDecl, com.sun.tools.javac.util.List<?> values){
+    private void jarBind(ClassDecl classDecl, com.sun.tools.javac.util.List<?> values, com.sun.tools.javac.util.List<?> ignores){
         for(Object value : values){
             String loadPackage = value.toString().replaceAll("\"", "");
             List<Class<?>> classes = Utils.getJarClasses(getClass().getClassLoader(), loadPackage);
 
             for(Class<?> clazz : classes){
+                if(ignores != null) {
+                    boolean isIgnore = false;
+                    for (Object ignore : ignores) {
+                        System.out.println(clazz.getSimpleName()+"/"+ignore+" "+clazz.getSimpleName().equals(ignore.toString().replace("\"","")));
+                        if (clazz.getSimpleName().equals(ignore.toString().replace("\"",""))) {
+                            isIgnore = true;
+                            System.out.println("ignore:"+clazz.getSimpleName());
+                            break;
+                        }
+                    }
+                    if (isIgnore) {
+                        continue;
+                    }
+                }
                 String packageName = genPackage +".vo"+clazz.getCanonicalName().replaceAll("."+clazz.getSimpleName(), "").replaceAll(loadPackage, "");
-
                 TypeName extendsType = null;
 
                 if(!clazz.getSuperclass().equals(Object.class)){
