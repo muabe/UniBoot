@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
 public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.ViewHolder{
+    @NotNull
     public T binder;
-    public Item item;
-    public int viewType;
+    private Item item;
+    private int viewType;
 
     public UniViewHolder(View view){
         super(view);

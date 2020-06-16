@@ -18,11 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<UniViewHolder<?, ?>> {
-//    protected final Store holderStore = new Store();
+    protected ArrayList<Class> holderList = new ArrayList<>();
     @NotNull
     protected List<ItemType> itemList = new ArrayList<>();
     final static String defaultType = "uni_recycler_default_type";
     protected RecyclerView recyclerView;
+
+    @NotNull
+    protected abstract Class<? extends UniViewHolder<?,?>> getType(ItemType item, int position, List<ItemType> list);
 
     public UniRecyclerAdapter(@NotNull RecyclerView recyclerView) {
         initRecyclerView(recyclerView);
@@ -32,6 +35,13 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
         this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        return this;
+    }
+
+    public UniRecyclerAdapter initRecyclerView(@NotNull RecyclerView recyclerView, @NotNull RecyclerView.LayoutManager layoutManager) {
+        this.recyclerView = recyclerView;
+        recyclerView.setAdapter(this);
+        recyclerView.setLayoutManager(layoutManager);
         return this;
     }
 
@@ -52,21 +62,6 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
         holder.onPre();
     }
 
-    @NotNull
-    protected abstract Class<? extends UniViewHolder> getType(ItemType item, int position, List<ItemType> list);
-
-
-//    public UniRecyclerAdapter<ItemType> addHolder(@NotNull Class<? extends UniViewHolder<?, ?>>... holders) {
-//
-//        for(Class<? extends UniViewHolder<?, ?>> holder : holders) {
-//            try {
-//                holderStore.add(holder.toString(), holder.getConstructor(View.class).newInstance(new View(recyclerView.getContext())));
-//            } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-//                throw new RuntimeException("Not define @HolderType default constructor", e);
-//            }
-//        }
-//        return this;
-//    }
 
 
     private Object getInstance(ViewGroup parents, int viewType){
@@ -86,20 +81,9 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
         }
     }
 
-
-    ArrayList<Class> holderList = new ArrayList<>();
     @NotNull
     @Override
     public int getItemViewType(int position) {
-//        ItemType item = itemList.get(position);
-//        String[] keys = holderStore.getKeys();
-//        int i =0;
-//        for(String key : keys){
-//            if(key.equals(getType(item, position, getList()).toString())){
-//                return i;
-//            }
-//            i++;
-//        }
         ItemType item = itemList.get(position);
         Class type = getType(item, position, getList());
         if(!holderList.contains(type)){
@@ -107,18 +91,6 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
         }
         return holderList.indexOf(type);
     }
-
-
-
-
-//    public String getTypeName(int viewType){
-//        String[] infos = holderStore.getKeys();
-//        if(infos == null){
-//            return "";
-//        }else{
-//            return (String)infos[viewType];
-//        }
-//    }
 
     @NotNull
     @Override
