@@ -58,6 +58,9 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import okio.BufferedSink;
+import okio.Okio;
+
 
 /**
  * Created by codemasta on 2015-09-14.
@@ -340,6 +343,39 @@ public class JsonWeb {
             text = getRequestGson().toJson(param);
         }
         return POST(METHOD.PATCH, text);
+    }
+
+    public void DOWNLOAD(File file) throws IOException, WebException{
+        Request.Builder reqestBuilder = new Request.Builder();
+//        addHeaderAll(reqestBuilder);
+        reqestBuilder.url(getFullUrl());
+        Request request = reqestBuilder.build();
+        call = client.newCall(request);
+        Response response = call.execute();
+
+//        InputStream inputStream = response.body().byteStream();
+//        FileOutputStream outputStream = new FileOutputStream(file);
+//
+//        int totalCount = inputStream.available();
+//        byte[] buffer = new byte[2 * 1024];
+//        int readLength = 0;
+//        while ((readLength = inputStream.read(buffer)) != -1 ) {
+//            outputStream.write(buffer, 0, readLength);
+//        }
+//        outputStream.flush();
+//        outputStream.close();
+//        inputStream.close();
+//        Log.e("dd","파일사이즈:"+totalCount);
+
+
+        BufferedSink sink = Okio.buffer(Okio.sink(file));
+        sink.writeAll(response.body().source());
+        sink.close();
+
+
+//        WebResult result = getResult(response, WebResult.class);
+//        debugResponse(result.getBody(), response);
+//        unexpectedCode(response, result);
     }
 
     public Request initMethod(METHOD method, Request.Builder reqestBuilder, RequestBody body) {

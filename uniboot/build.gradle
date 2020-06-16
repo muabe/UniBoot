@@ -27,6 +27,7 @@ dependencies {
     implementation project(':uni')
     implementation project(':propose')
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 //    implementation 'org.jetbrains:annotations-java5:15.0'
 
 //    implementation 'com.github.muabe:Uni:Uni-1.6.0'
