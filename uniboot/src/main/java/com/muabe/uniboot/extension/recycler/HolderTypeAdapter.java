@@ -49,7 +49,6 @@ public class HolderTypeAdapter extends ClassInjectAdapter<RecycleHolder> {
             holder.setBinder(vb);
 //            targetClass.getField("binder").set(holder, vb);
             this.root = holder.binder.getRoot();
-            holder.setTypeName(getTypeName());
             holder.setViewType(viewType);
             return holder;
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {

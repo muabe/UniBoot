@@ -11,7 +11,6 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
     public T binder;
     public Item item;
     public int viewType;
-    public String typeName;
 
     public UniViewHolder(View view){
         super(view);
@@ -45,18 +44,4 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
         this.viewType = viewType;
     }
 
-    public String getTypeName() {
-        if(typeName == null){
-            RecycleHolder recycleHolder = getClass().getAnnotation(RecycleHolder.class);
-            if(recycleHolder == null){
-                throw new RuntimeException("Not define @HolderType annotation");
-            }
-            typeName = getClass().getAnnotation(RecycleHolder.class).value();
-        }
-        return typeName;
-    }
-
-    void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
 }

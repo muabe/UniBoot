@@ -9,8 +9,6 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.markjmind.uni.common.Store;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<UniViewHolder<?, ?>> {
-    protected final Store holderStore = new Store();
+//    protected final Store holderStore = new Store();
     @NotNull
     protected List<ItemType> itemList = new ArrayList<>();
     final static String defaultType = "uni_recycler_default_type";
@@ -58,32 +56,29 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
     protected abstract Class<? extends UniViewHolder> getType(ItemType item, int position, List<ItemType> list);
 
 
-    public UniRecyclerAdapter<ItemType> addHolder(@NotNull Class<? extends UniViewHolder<?, ?>>... holders) {
-
-        for(Class<? extends UniViewHolder<?, ?>> holder : holders) {
-            try {
-                holderStore.add(holder.toString(), holder.getConstructor(View.class).newInstance(new View(recyclerView.getContext())));
-            } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                throw new RuntimeException("Not define @HolderType default constructor", e);
-            }
-        }
-        return this;
-    }
+//    public UniRecyclerAdapter<ItemType> addHolder(@NotNull Class<? extends UniViewHolder<?, ?>>... holders) {
+//
+//        for(Class<? extends UniViewHolder<?, ?>> holder : holders) {
+//            try {
+//                holderStore.add(holder.toString(), holder.getConstructor(View.class).newInstance(new View(recyclerView.getContext())));
+//            } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+//                throw new RuntimeException("Not define @HolderType default constructor", e);
+//            }
+//        }
+//        return this;
+//    }
 
 
     private Object getInstance(ViewGroup parents, int viewType){
         try {
             LayoutInflater inflater = LayoutInflater.from(parents.getContext());
-            String typeName = getTypeName(viewType);
-
-            Class<?> targetClass = holderStore.get(typeName).getClass();
+            Class<?> targetClass = holderList.get(viewType);
             Class<?> genericClass = (Class<?>)((ParameterizedType)targetClass.getGenericSuperclass()).getActualTypeArguments()[1];
             Method method = genericClass.getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
             ViewDataBinding vb = (ViewDataBinding)method.invoke(null, inflater, parents, false);
 
             UniViewHolder holder = (UniViewHolder)targetClass.getConstructor(View.class).newInstance(vb.getRoot());
             holder.setBinder(vb);
-            holder.setTypeName(typeName);
             holder.setViewType(viewType);
             return holder;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -92,33 +87,38 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
     }
 
 
+    ArrayList<Class> holderList = new ArrayList<>();
     @NotNull
     @Override
     public int getItemViewType(int position) {
+//        ItemType item = itemList.get(position);
+//        String[] keys = holderStore.getKeys();
+//        int i =0;
+//        for(String key : keys){
+//            if(key.equals(getType(item, position, getList()).toString())){
+//                return i;
+//            }
+//            i++;
+//        }
         ItemType item = itemList.get(position);
-        String[] keys = holderStore.getKeys();
-        int i =0;
-        for(String key : keys){
-            if(key.equals(getType(item, position, getList()).toString())){
-                return i;
-            }
-            i++;
+        Class type = getType(item, position, getList());
+        if(!holderList.contains(type)){
+            holderList.add(type);
         }
-
-        return -1;
+        return holderList.indexOf(type);
     }
 
 
 
 
-    public String getTypeName(int viewType){
-        String[] infos = holderStore.getKeys();
-        if(infos == null){
-            return "";
-        }else{
-            return (String)infos[viewType];
-        }
-    }
+//    public String getTypeName(int viewType){
+//        String[] infos = holderStore.getKeys();
+//        if(infos == null){
+//            return "";
+//        }else{
+//            return (String)infos[viewType];
+//        }
+//    }
 
     @NotNull
     @Override
