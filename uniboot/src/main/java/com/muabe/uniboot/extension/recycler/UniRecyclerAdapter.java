@@ -9,6 +9,13 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.markjmind.uni.common.Store;
+import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnCheckedChangeAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,6 +30,7 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
     protected List<ItemType> itemList = new ArrayList<>();
     final static String defaultType = "uni_recycler_default_type";
     protected RecyclerView recyclerView;
+    Store paramStore = new Store();
 
     @NotNull
     protected abstract Class<? extends UniViewHolder<?,?>> getType(ItemType item, int position, List<ItemType> list);
@@ -59,7 +67,22 @@ public abstract class UniRecyclerAdapter<ItemType> extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(@NonNull UniViewHolder holder, int position) {
         holder.setItem(itemList.get(position));
+        Mapper mapper = new Mapper(holder.binder.getRoot(), holder);
+        holder.param = (Store)paramStore.opt(holder.getClass().toString(), new Store());
+        mapper.inject(new ParamAdapter(holder.param), new GetViewAdapter(), new OnClickAdapter(), new OnCheckedChangeAdapter());
         holder.onPre();
+    }
+
+
+
+    public UniRecyclerAdapter<ItemType> addParam(Class<? extends UniViewHolder> holderClass, String key, Object value){
+        Store param = (Store)paramStore.get(holderClass.toString());
+        if(param == null){
+            param = new Store();
+            paramStore.add(holderClass.toString(), param);
+        }
+        param.add(key, value);
+        return this;
     }
 
 

@@ -5,9 +5,12 @@ import android.view.View;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.markjmind.uni.common.Store;
+
 import org.jetbrains.annotations.NotNull;
 
 public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.ViewHolder{
+    public Store param = new Store();
     @NotNull
     public T binder;
     private Item item;
