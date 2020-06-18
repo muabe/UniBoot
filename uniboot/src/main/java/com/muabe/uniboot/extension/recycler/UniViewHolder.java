@@ -15,6 +15,7 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
     public T binder;
     private Item item;
     private int viewType;
+    private String groupName;
 
     public UniViewHolder(View view){
         super(view);
@@ -48,4 +49,11 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
         this.viewType = viewType;
     }
 
+    void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
 }
