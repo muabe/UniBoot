@@ -31,8 +31,10 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     final static String emptyHolderGroup = "uni_recycler_adapter_empty_hodler";
     private AdapterBuilder emptyAdapterBuilder = null;
     protected RecyclerView recyclerView;
+    private ScrollDetector scrollDetector;
 
     public UniRecyclerAdapter(@NotNull RecyclerView recyclerView) {
+        scrollDetector = new ScrollDetector(buliderStore);
         initRecyclerView(recyclerView);
     }
 
@@ -44,8 +46,11 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(new ScrollDetector(recyclerView, buliderStore));
+        recyclerView.addOnScrollListener(scrollDetector);
         return this;
+    }
+    public void setOnLastScrollListener(OnLastScrollListener listener){
+        scrollDetector.setOnLastScrollListener(listener);
     }
 
     @NotNull
@@ -266,42 +271,52 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
 
     private class ScrollDetector extends RecyclerView.OnScrollListener{
-        private LinearLayoutManager manager;
-        private int lastPosition = 0;
         private Store buliderStore;
-        private int totalCount = 0;
+        private OnLastScrollListener listener;
 
-        ScrollDetector(RecyclerView recyclerView, Store buliderStore){
-            manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+        ScrollDetector(Store buliderStore){
             this.buliderStore = buliderStore;
         }
 
         private int count(){
-            String[] keys = buliderStore.getKeys();
             int totalCount = 0;
             for(Object b : buliderStore.getValues()){
                 totalCount += ((AdapterBuilder)b).getList().size();
             }
             return totalCount;
         }
-
-        void resetLastPosition(){
-            lastPosition = manager.findLastCompletelyVisibleItemPosition();
-            totalCount = manager.getItemCount();
+        void setOnLastScrollListener(OnLastScrollListener listener){
+            this.listener = listener;
         }
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            lastPosition = manager.findLastCompletelyVisibleItemPosition();
+            int lastPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+count());
-            if(lastPosition >= count()){
-                onLast();
+            if(listener != null && lastPosition >= count()-1 && buliderStore.size() > 0){
+                Object[] values = buliderStore.getValues();
+                if(values.length > 0){
+                    List list = ((AdapterBuilder)values[values.length-1]).getList();
+                    if(list.size() > 0){
+                        onLast(list.get(list.size()-1), list);
+                        return;
+
+                    }
+                }
+                onLast(null, new ArrayList());
             }
         }
 
-        public void onLast(){
+        public void onLast(Object item, List<?> itemList)
+        {
+            listener.onLast(item, itemList);
             Log.e("dd", "맨 밑이다");
+
         }
+    }
+
+    public interface OnLastScrollListener<ItemType>{
+        boolean onLast(ItemType item, @NotNull List<ItemType> itemList);
     }
 
     public class AdapterBuilder{
