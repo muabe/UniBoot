@@ -278,11 +278,11 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
         private int count(){
             String[] keys = buliderStore.getKeys();
-            if(keys.length > 0 ){
-                return ((List)buliderStore.get(keys.length-1)).size();
-            }else{
-                return 0;
+            int totalCount = 0;
+            for(Object b : buliderStore.getValues()){
+                totalCount += ((AdapterBuilder)b).getList().size();
             }
+            return totalCount;
         }
 
         void resetLastPosition(){
@@ -293,7 +293,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             lastPosition = manager.findLastCompletelyVisibleItemPosition();
-            Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+((LinearLayoutManager)recyclerView.getLayoutManager()).getItemCount());
+            Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+count());
             if(lastPosition >= count()){
                 onLast();
             }
