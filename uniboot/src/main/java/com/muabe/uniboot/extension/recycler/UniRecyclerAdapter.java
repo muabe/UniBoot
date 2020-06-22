@@ -1,5 +1,6 @@
 package com.muabe.uniboot.extension.recycler;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,29 +25,26 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>> {
+public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>>{
     protected Store buliderStore = new Store();
     protected ArrayList<Class> holderList = new ArrayList<>();
     final static String emptyHolderGroup = "uni_recycler_adapter_empty_hodler";
     private AdapterBuilder emptyAdapterBuilder = null;
     protected RecyclerView recyclerView;
-//    Store paramStore = new Store();
 
     public UniRecyclerAdapter(@NotNull RecyclerView recyclerView) {
         initRecyclerView(recyclerView);
     }
 
     public UniRecyclerAdapter initRecyclerView(@NotNull RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-        recyclerView.setAdapter(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        return this;
+        return initRecyclerView(recyclerView, new LinearLayoutManager(recyclerView.getContext()));
     }
 
     public UniRecyclerAdapter initRecyclerView(@NotNull RecyclerView recyclerView, @NotNull RecyclerView.LayoutManager layoutManager) {
         this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new ScrollDetector(recyclerView, buliderStore));
         return this;
     }
 
@@ -137,9 +135,6 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     @NotNull
     @Override
     public int getItemViewType(int position) {
-//        if(isEmptyShow()){
-//            return -2;
-//        }
         String[] keys = buliderStore.getKeys();
         int addSize = 0;
         for(String key : keys){
@@ -188,9 +183,27 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
 
 
-    public List<?> getList(String groupName){
+    public List<?> getListItem(String groupName){
         return getAdapter(groupName).getList();
     }
+
+    public List<?> getListItem(int index){
+        return getListItem(""+index);
+    }
+
+    public List<?> getListItem(){
+        return getListItem(0);
+    }
+
+    public Object getSingleItem(int index){
+        return getListItem(index).get(0);
+    }
+
+    public Object getSingleItem(){
+        return getSingleItem(0);
+    }
+
+
 
     public AdapterBuilder addListItem(@NotNull String groupName, List list, @NotNull TypeListener<?> typeListener){
         if(list == null){
@@ -248,6 +261,46 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         @Override
         public Class<? extends UniViewHolder<?, ?>> getType(@NotNull Object item, @NotNull int position, @NotNull List list) {
             return holderClass;
+        }
+    }
+
+
+    private class ScrollDetector extends RecyclerView.OnScrollListener{
+        private LinearLayoutManager manager;
+        private int lastPosition = 0;
+        private Store buliderStore;
+        private int totalCount = 0;
+
+        ScrollDetector(RecyclerView recyclerView, Store buliderStore){
+            manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+            this.buliderStore = buliderStore;
+        }
+
+        private int count(){
+            String[] keys = buliderStore.getKeys();
+            if(keys.length > 0 ){
+                return ((List)buliderStore.get(keys.length-1)).size();
+            }else{
+                return 0;
+            }
+        }
+
+        void resetLastPosition(){
+            lastPosition = manager.findLastCompletelyVisibleItemPosition();
+            totalCount = manager.getItemCount();
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            lastPosition = manager.findLastCompletelyVisibleItemPosition();
+            Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+((LinearLayoutManager)recyclerView.getLayoutManager()).getItemCount());
+            if(lastPosition >= count()){
+                onLast();
+            }
+        }
+
+        public void onLast(){
+            Log.e("dd", "맨 밑이다");
         }
     }
 
