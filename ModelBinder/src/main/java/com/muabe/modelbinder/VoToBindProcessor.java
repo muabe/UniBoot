@@ -37,7 +37,7 @@ import javax.lang.model.element.TypeElement;
 @AutoService(Processor.class)
 public class VoToBindProcessor extends AbstractProcessor {
     BaseDecl util;
-    String genPackage = "com.muabe.bindtest";
+    String genPackage;
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);

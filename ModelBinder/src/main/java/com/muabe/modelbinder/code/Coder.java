@@ -46,11 +46,11 @@ public class Coder {
                     .addStatement("this." + fieldName + " = " + fieldName)
                     .beginControlFlow("try")
                     .addStatement("notifyPropertyChanged((int)Class.forName($S).getDeclaredField(\"$N\").get(null))"
-                            , "com.muabe.bindtest.BR", fieldName)
+                            , "com.inviteshealth.tdna.BR", fieldName)
                     .nextControlFlow("catch ($T e)", Exception.class)
                     .addStatement("throw new $T(e)", RuntimeException.class)
                     .endControlFlow()
-//                .addStatement("notifyPropertyChanged($T.$N)", ClassName.get("com.muabe.bindtest", "BR"), fieldName)
+//                .addStatement("notifyPropertyChanged($T.$N)", ClassName.get("com.inviteshealth.tdna", "BR"), fieldName)
                     .build();
 
 
@@ -98,11 +98,11 @@ public class Coder {
                     .addStatement("this." + fieldName + " = " + fieldName)
                     .beginControlFlow("try")
                     .addStatement("notifyPropertyChanged((int)Class.forName($S).getDeclaredField(\"$N\").get(null))"
-                            , "com.muabe.bindtest.BR", fieldName)
+                            , "com.inviteshealth.tdna.BR", fieldName)
                     .nextControlFlow("catch ($T e)", Exception.class)
                     .addStatement("throw new $T(e)", RuntimeException.class)
                     .endControlFlow()
-//                .addStatement("notifyPropertyChanged($T.$N)", ClassName.get("com.muabe.bindtest", "BR"), fieldName)
+//                .addStatement("notifyPropertyChanged($T.$N)", ClassName.get("com.inviteshealth.tdna", "BR"), fieldName)
                     .build();
 
 
