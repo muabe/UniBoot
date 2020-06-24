@@ -7,13 +7,11 @@ import android.widget.FrameLayout;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.markjmind.propose.Motion;
-import com.markjmind.propose.Propose;
-import com.markjmind.propose.listener.MotionListener;
-import com.markjmind.propose.listener.ProposeListener;
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
+import com.muabe.propose.Motion;
+import com.muabe.propose.Propose;
 import com.muabe.uniboot.R;
 
 /**
@@ -208,6 +206,7 @@ public class MenuBoot extends UniBoot {
             if(animationInfo != null){
                 if(!isStartedAnimation()) {
                     animationInfo.motion.animate();
+
                 }
             }
         }
