@@ -27,7 +27,7 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.muabe:Uni:v1.9.0'
-    implementation 'com.github.muabe:Propose:1.5.1'
+    implementation 'com.github.muabe:Propose:1.5.2'
 //    implementation project(':uni')
 //    implementation project(':propose')
 
