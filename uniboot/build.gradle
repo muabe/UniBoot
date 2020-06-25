@@ -26,10 +26,10 @@ dependencies {
     implementation 'org.jetbrains:annotations:16.0.2'
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.muabe:Uni:v1.9.0'
-    implementation 'com.github.muabe:Propose:1.5.2'
-//    implementation project(':uni')
-//    implementation project(':propose')
+//    implementation 'com.github.muabe:Uni:v1.9.0'
+//    implementation 'com.github.muabe:Propose:1.5.2'
+    implementation project(':uni')
+    implementation project(':propose')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
