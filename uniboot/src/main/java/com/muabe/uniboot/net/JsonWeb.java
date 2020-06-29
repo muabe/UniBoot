@@ -78,6 +78,7 @@ public class JsonWeb {
     private String paramString;
     protected boolean debug = true;
     private Call call;
+    private String depth = null;
 
     private OnResultListener resultListener;
 
@@ -152,6 +153,14 @@ public class JsonWeb {
         return this;
     }
 
+    public String getDepth() {
+        return depth;
+    }
+
+    public void setDepth(String depth) {
+        this.depth = depth;
+    }
+
     protected <ResultType extends WebResultAdapter> ResultType getResult(Response response, Class<ResultType> type) throws IOException {
         try {
             Constructor<ResultType> constructor = type.getConstructor();
@@ -191,6 +200,7 @@ public class JsonWeb {
         WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
         unexpectedCode(response, result);
+        result.setDepth(getDepth());
         return result;
     }
 
@@ -214,7 +224,7 @@ public class JsonWeb {
         WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
         unexpectedCode(response, result);
-
+        result.setDepth(getDepth());
         return result;
     }
 
@@ -244,6 +254,7 @@ public class JsonWeb {
         WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
         unexpectedCode(response, result);
+        result.setDepth(getDepth());
         return result;
     }
 
@@ -281,6 +292,7 @@ public class JsonWeb {
         WebResult result = getResult(response, WebResult.class);
         debugResponse(result.getBody(), response);
         unexpectedCode(response, result);
+        result.setDepth(getDepth());
         return result;
     }
 
