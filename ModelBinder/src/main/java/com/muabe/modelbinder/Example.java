@@ -6,6 +6,7 @@ import com.muabe.modelbinder.annotation.PackageClassBinder;
         "com.skt.invites.tdna"
 })
 public class Example {
+
 }
 
 /** build.gradle
