@@ -53,7 +53,7 @@ public class VoToBindProcessor extends AbstractProcessor {
                 if (element.getKind().equals(ElementKind.CLASS)) {
                     if(element.getAnnotation(PackageClassBinder.class) !=null ){
                         util.println("------------ Start Processor : -------------");
-                        System.out.println("PackageClassBinder : "+ element.getSimpleName());
+//                        System.out.println("PackageClassBinder : "+ element.getSimpleName());
                         ClassDecl classDecl = new ClassDecl(processingEnv, (TypeElement) element);
 
                         List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
@@ -95,7 +95,7 @@ public class VoToBindProcessor extends AbstractProcessor {
                 if(ignores != null) {
                     boolean isIgnore = false;
                     for (Object ignore : ignores) {
-                        System.out.println(clazz.getSimpleName()+"/"+ignore+" "+clazz.getSimpleName().equals(ignore.toString().replace("\"","")));
+//                        System.out.println(clazz.getSimpleName()+"/"+ignore+" "+clazz.getSimpleName().equals(ignore.toString().replace("\"","")));
                         if (clazz.getSimpleName().equals(ignore.toString().replace("\"",""))) {
                             isIgnore = true;
                             System.out.println("ignore:"+clazz.getSimpleName());
@@ -117,11 +117,14 @@ public class VoToBindProcessor extends AbstractProcessor {
                     extendsType = ClassName.get(pack, name);
                 }
 
-                Coder.makeBindable(classDecl.getFiler(),
+                boolean result = Coder.makeBindable(classDecl.getFiler(),
                         packageName,
                         clazz.getSimpleName(),
                         extendsType,
                         clazz.getDeclaredFields());
+                if(!result){
+//                    System.out.println("실패:"+clazz.getCanonicalName());
+                }
             }
         }
     }
