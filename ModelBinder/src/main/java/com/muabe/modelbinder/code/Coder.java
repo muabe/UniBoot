@@ -1,7 +1,6 @@
 package com.muabe.modelbinder.code;
 
 import com.muabe.modelbinder.decl.FieldDecl;
-import com.skt.invites.tdna.cmm.vo.MResponsePageVO;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -116,7 +115,6 @@ public class Coder {
         }
         JavaFile javaFile = JavaFile.builder(packageName, typeBuilder.build())
                 .build();
-        MResponsePageVO.Page p;
 
         try {
             javaFile.writeTo(filer);
