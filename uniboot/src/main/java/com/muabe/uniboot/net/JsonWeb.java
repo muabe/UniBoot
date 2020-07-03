@@ -492,10 +492,14 @@ public class JsonWeb {
             Log.e(this.getClass().getSimpleName(), "Server Response Error Not 200 code:" + response.code());
             Log.e(this.getClass().getSimpleName(), response.message());
             throw new WebException(WebException.NOT_200_CODE, result, "Not 200 code " + response);
-        }else if(resultListener != null && !resultListener.onResult(result)){
-            Log.e(this.getClass().getSimpleName(), "Custom Response Error:" + response.code());
-            Log.e(this.getClass().getSimpleName(), ""+response.message());
-            throw new WebException(WebException.CUSTOM_RESPONSE_ERROR_CODE, result, "Custom Response Error " + response);
+        }else if(resultListener != null){
+            ResultInfo info = new ResultInfo();
+            resultListener.onResult(info, result);
+            if(!info.isResult()) {
+                Log.e(this.getClass().getSimpleName(), info.getMessage()+":"+ response.code());
+                Log.e(this.getClass().getSimpleName(), "" + response.message());
+                throw new WebException(WebException.CUSTOM_RESPONSE_ERROR_CODE, result, info.getMessage());
+            }
         }
     }
 

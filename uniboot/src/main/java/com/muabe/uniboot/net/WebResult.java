@@ -47,6 +47,28 @@ public class WebResult extends WebResultAdapter {
         }
     }
 
+    private Object getData(String... deps_jsonKey) throws JSONException {
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
+            deps_jsonKey = deps;
+        }
+        if (getBody() == null || getBody().length() == 0) {
+            return null;
+        }
+        if (deps_jsonKey == null || deps_jsonKey.length == 0) {
+            return new JSONObject(getBody());
+        } else {
+            JSONObject json = new JSONObject(getBody());
+            Object result = null;
+            for (String key : deps_jsonKey) {
+                if (json.isNull(key)) {
+                    return null;
+                }
+                result = json.get(key);
+            }
+            return result;
+        }
+    }
+
     public JSONArray getJSONArray(String... deps_jsonKey) throws JSONException {
         if (deps_jsonKey == null || deps_jsonKey.length == 0) {
             deps_jsonKey = deps;
@@ -150,6 +172,19 @@ public class WebResult extends WebResultAdapter {
     public boolean getBooleanData(String name, String... deps) throws JSONException {
         JSONObject jsonObject = getJSON(deps);
         return jsonObject.getBoolean(name);
+    }
+
+    public boolean getBoolean(String... deps) throws JSONException {
+        return (boolean)getData(deps);
+    }
+
+
+    public String getString(String... deps) throws JSONException {
+        return (String)getData(deps);
+    }
+
+    public int getInt(String... deps) throws JSONException {
+        return (Integer)getData(deps);
     }
 
     public boolean isSuccessful() {
