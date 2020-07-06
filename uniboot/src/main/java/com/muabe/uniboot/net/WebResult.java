@@ -147,9 +147,9 @@ public class WebResult extends WebResultAdapter {
         return fromJson(dtoClass, json);
     }
 
-//    public <Dto>Dto getModel(TypeToken<?> typeToken, String... deps) throws JSONException {
-//        return fromJson(typeToken, deps);
-//    }
+    public <Dto>Dto getModel(TypeToken<?> typeToken, String... deps) throws JSONException {
+        return fromJson(typeToken, deps);
+    }
 
     public <T> List<T> getModelList(Class<T> type) throws JSONException {
         return fromJsonList(type);
