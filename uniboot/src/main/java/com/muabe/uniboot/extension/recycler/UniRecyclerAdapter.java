@@ -188,15 +188,15 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
 
 
-    public List<?> getListItem(String groupName){
+    public List getListItem(String groupName){
         return getAdapter(groupName).getList();
     }
 
-    public List<?> getListItem(int index){
+    public List getListItem(int index){
         return getListItem(""+index);
     }
 
-    public List<?> getListItem(){
+    public List getListItem(){
         return getListItem(0);
     }
 
