@@ -498,7 +498,7 @@ public class JsonWeb {
             if(!info.isResult()) {
                 Log.e(this.getClass().getSimpleName(), info.getMessage()+":"+ response.code());
                 Log.e(this.getClass().getSimpleName(), "" + response.message());
-                throw new WebException(WebException.CUSTOM_RESPONSE_ERROR_CODE, result, info.getMessage());
+                throw new WebException(WebException.CUSTOM_RESPONSE_ERROR_CODE, result, info.getMessage()).setCustomResult(info);
             }
         }
     }

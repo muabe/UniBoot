@@ -12,6 +12,7 @@ public class WebException extends Exception  {
     private Throwable exception;
     private WebResult webResult;
     private int errorCode;
+    private ResultInfo resultInfo;
 
     public static final int DISCONNECT_INTERNET_CODE = 0;
     /**
@@ -61,6 +62,15 @@ public class WebException extends Exception  {
         this.response = webResult.getResponse();
         this.message = message;
         this.body = webResult.getBody();
+    }
+
+    public WebException setCustomResult(ResultInfo info){
+        this.resultInfo = info;
+        return this;
+    }
+
+    public ResultInfo getCustomResult(){
+        return resultInfo;
     }
 
     public WebResult getWebResult() {

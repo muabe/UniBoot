@@ -1,8 +1,11 @@
 package com.muabe.uniboot.net;
 
+import com.markjmind.uni.common.Store;
+
 public class ResultInfo {
     private boolean result = true;
     private String message = "";
+    public Store param = new Store();
 
     public boolean isResult() {
         return result;
