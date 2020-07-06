@@ -196,7 +196,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         return getListItem(""+index);
     }
 
-    public List<?> getListItem(){
+    public List getListItem(){
         return getListItem(0);
     }
 
