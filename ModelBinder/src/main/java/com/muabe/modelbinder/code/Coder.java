@@ -28,7 +28,7 @@ public class Coder {
             String fieldName = fieldDecl.getName();
             String methodName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
             FieldSpec field = FieldSpec.builder(fieldDecl.getTypeClass(), fieldName)
-                    .addModifiers(Modifier.PRIVATE)
+                    .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(ClassName.get("androidx.databinding", "Bindable"))
                     .build();
 
