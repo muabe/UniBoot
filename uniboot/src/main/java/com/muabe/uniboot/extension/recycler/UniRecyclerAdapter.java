@@ -68,6 +68,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     public void onBindViewHolder(@NonNull UniViewHolder holder, int position) {
         holder.setItem(getItem(position));
         holder.setAdapter(this);
+        holder.setItemList(getListItem(holder.getGroupName()));
         Mapper mapper = new Mapper(holder.binder.getRoot(), holder);
         holder.param = getAdapter(holder.getGroupName()).getParam();
         mapper.inject(new ParamAdapter(holder.param), new GetViewAdapter(), new OnClickAdapter(), new OnCheckedChangeAdapter());
@@ -193,10 +194,9 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         } else {
             String[] keys = buliderStore.getKeys();
             int addSize = 0;
-            int position = 0;
             for (String key : keys) {
                 AdapterBuilder builder = (AdapterBuilder) buliderStore.get(key);
-                if (position < addSize + builder.getList().size()) {
+                if (adapterPosition < addSize + builder.getList().size()) {
                     return adapterPosition - addSize;
                 }
                 addSize += builder.getList().size();

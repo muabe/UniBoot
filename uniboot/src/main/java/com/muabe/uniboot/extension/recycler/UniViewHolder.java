@@ -9,15 +9,19 @@ import com.markjmind.uni.common.Store;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.ViewHolder{
 
     public Store param = new Store();
     @NotNull
     public T binder;
     private UniRecyclerAdapter adapter;
+    private List<Item> list;
     private Item item;
     private int viewType;
     private String groupName;
+
 
     public UniViewHolder(View view){
         super(view);
@@ -37,6 +41,14 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
 
     public Item getItem() {
         return item;
+    }
+
+    public List<Item> getItemList(){
+        return list;
+    }
+
+    void setItemList(List<Item> list){
+        this.list = list;
     }
 
     void setItem(Item item) {
@@ -71,4 +83,5 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
     public UniRecyclerAdapter getAdapter() {
         return adapter;
     }
+
 }
