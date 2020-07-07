@@ -10,9 +10,11 @@ import com.markjmind.uni.common.Store;
 import org.jetbrains.annotations.NotNull;
 
 public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.ViewHolder{
+
     public Store param = new Store();
     @NotNull
     public T binder;
+    private UniRecyclerAdapter adapter;
     private Item item;
     private int viewType;
     private String groupName;
@@ -55,5 +57,18 @@ public class UniViewHolder<Item,T extends ViewDataBinding> extends RecyclerView.
 
     public String getGroupName() {
         return groupName;
+    }
+
+
+    public int getItemPosition(){
+        return adapter.getItemPosition(getAdapterPosition());
+    }
+
+    void setAdapter(UniRecyclerAdapter adapter){
+        this.adapter = adapter;
+    }
+
+    public UniRecyclerAdapter getAdapter() {
+        return adapter;
     }
 }
