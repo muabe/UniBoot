@@ -43,6 +43,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -284,6 +285,44 @@ public class JsonWeb {
         }
 
         Request request = initMethod(METHOD.POST, reqestBuilder, body.build());
+        debugRequest("MULTIPART", paramString);
+
+        clearAllParams();
+        call = client.newCall(request);
+        Response response = call.execute();
+        WebResult result = getResult(response, WebResult.class);
+        debugResponse(result.getBody(), response);
+        unexpectedCode(response, result);
+        result.setDepth(getDepth());
+        return result;
+    }
+
+    public WebResult MULTIPART(METHOD method, String filesKey, Collection<File> files) throws WebException, IOException, JSONException {
+        Request.Builder reqestBuilder = new Request.Builder()
+                .url(getFullUrl())
+                .cacheControl(new CacheControl.Builder().noCache().build());
+
+        addHeaderAll(reqestBuilder);
+
+        MultipartBuilder body = new MultipartBuilder()
+                .type(MultipartBuilder.FORM);
+
+        String[] keys = getParamKeys();
+        for (String key : keys) {
+            body.addFormDataPart(key, (String)param.get(key));
+        }
+
+        String[] fileKeys = getFileKeys();
+        for (File file : files) {
+//            body.addPart(
+//                    Headers.of("Content-Disposition", "FORM-data; name=\"" + key + "\""),
+//                    RequestBody.create(MEDIA_TYPE_IMAGE, file.getView(key)));
+            body
+                    .addFormDataPart(filesKey, file.getName(),
+                            RequestBody.create(MEDIA_TYPE_IMAGE, file));
+        }
+
+        Request request = initMethod(method, reqestBuilder, body.build());
         debugRequest("MULTIPART", paramString);
 
         clearAllParams();
