@@ -38,6 +38,11 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         initRecyclerView(recyclerView);
     }
 
+    public UniRecyclerAdapter(@NotNull RecyclerView recyclerView, @NotNull RecyclerView.LayoutManager layoutManager) {
+        scrollDetector = new ScrollDetector(buliderStore);
+        initRecyclerView(recyclerView, layoutManager);
+    }
+
     public UniRecyclerAdapter initRecyclerView(@NotNull RecyclerView recyclerView) {
         return initRecyclerView(recyclerView, new LinearLayoutManager(recyclerView.getContext()));
     }
