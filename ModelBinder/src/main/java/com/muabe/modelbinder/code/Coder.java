@@ -114,7 +114,7 @@ public class Coder {
             if(memberField.getType().getTypeName().equals(List.class.getTypeName())){
                 methodBuilderSetter.addParameter(typeName, fieldName);
             }else{
-                methodBuilderSetter.returns(memberField.getType());
+                methodBuilderSetter.addParameter(memberField.getType(), fieldName);
             }
             MethodSpec setter = methodBuilderSetter
                     .addModifiers(Modifier.PUBLIC)
