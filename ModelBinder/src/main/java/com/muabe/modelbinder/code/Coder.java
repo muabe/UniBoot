@@ -5,12 +5,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
@@ -82,23 +84,41 @@ public class Coder {
                 .superclass(extend);
         for(Field memberField : fields) {
             String fieldName = memberField.getName();
-            String methodName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
-            FieldSpec field = FieldSpec.builder(memberField.getType(), fieldName)
+            FieldSpec.Builder fieldBuilder;
+            TypeName typeName = null;
+            if(memberField.getType().getTypeName().equals(List.class.getTypeName())){
+                typeName = ParameterizedTypeName.get(ClassName.get(memberField.getType()), getGenericClass(memberField.getGenericType().getTypeName()));
+                fieldBuilder = FieldSpec.builder(typeName, fieldName);
+            }else{
+                fieldBuilder = FieldSpec.builder(memberField.getType(), fieldName);
+            }
+
+            FieldSpec field = fieldBuilder
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(ClassName.get("androidx.databinding", "Bindable"))
                     .build();
 
-            MethodSpec getter = MethodSpec.methodBuilder("get" + methodName)
+            String methodName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
+            MethodSpec.Builder methodBuilderGetter = MethodSpec.methodBuilder("get" + methodName);
+            if(memberField.getType().getTypeName().equals(List.class.getTypeName())){
+                methodBuilderGetter.returns(typeName);
+            }else{
+                methodBuilderGetter.returns(memberField.getType());
+            }
+            MethodSpec getter = methodBuilderGetter
                     .addModifiers(Modifier.PUBLIC)
-                    .returns(memberField.getType())
                     .addStatement("return this." + fieldName)
                     .build();
 
-
-            MethodSpec setter = MethodSpec.methodBuilder("set" + methodName)
+            MethodSpec.Builder methodBuilderSetter = MethodSpec.methodBuilder("set" + methodName);
+            if(memberField.getType().getTypeName().equals(List.class.getTypeName())){
+                methodBuilderSetter.addParameter(typeName, fieldName);
+            }else{
+                methodBuilderSetter.returns(memberField.getType());
+            }
+            MethodSpec setter = methodBuilderSetter
                     .addModifiers(Modifier.PUBLIC)
                     .returns(void.class)
-                    .addParameter(memberField.getType(), fieldName)
                     .addStatement("this." + fieldName + " = " + fieldName)
                     .beginControlFlow("try")
                     .addStatement("notifyPropertyChanged((int)Class.forName($S).getDeclaredField(\"$N\").get(null))"
@@ -123,5 +143,17 @@ public class Coder {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private static ClassName getGenericClass(String genericTypeName){
+        if(genericTypeName.substring(genericTypeName.indexOf("<")+1).startsWith("com.skt.invites.tdna")){
+            String genClassName = genericTypeName.substring(genericTypeName.lastIndexOf(".")+1, genericTypeName.length()-1);
+            String packageName = genericTypeName.substring(genericTypeName.indexOf("<")+1, genericTypeName.lastIndexOf("."));
+            packageName = packageName.replaceAll("com.skt.invites.tdna", "com.inviteshealth.tdna.vo");
+            return ClassName.get(packageName, genClassName);
+        }else{
+            String genClassName = genericTypeName.substring(genericTypeName.indexOf("<")+1, genericTypeName.length()-1);
+            return ClassName.get("", genClassName);
+        }
     }
 }
