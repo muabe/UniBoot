@@ -597,6 +597,18 @@ public class JsonWeb {
         return this;
     }
 
+    /**
+     * 모든 param을 담은 HashMap을 넘김
+     * @param params
+     * @return
+     */
+    public JsonWeb addParams(HashMap<String, Object> params){
+        for(String key : params.keySet()){
+            this.param.put(key, params.get(key));
+        }
+        return this;
+    }
+
     public JsonWeb addParam(String key, String value) {
         param.put(key, value);
         return this;
