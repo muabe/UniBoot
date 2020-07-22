@@ -1,6 +1,5 @@
 package com.muabe.uniboot.extension.recycler;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +53,16 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         recyclerView.addOnScrollListener(scrollDetector);
         return this;
     }
+    public void setOnLastScrollListener(String groupName, OnLastScrollListener listener){
+        scrollDetector.setOnLastScrollListener(groupName, listener);
+    }
+
+    public void setOnLastScrollListener(int index, OnLastScrollListener listener){
+        scrollDetector.setOnLastScrollListener(""+index, listener);
+    }
+
     public void setOnLastScrollListener(OnLastScrollListener listener){
-        scrollDetector.setOnLastScrollListener(listener);
+        scrollDetector.setOnLastScrollListener(null, listener);
     }
 
     @NotNull
@@ -173,7 +180,33 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             }
         }
         return null;
+    }
 
+    public boolean hasGroup(String groupName){
+        return buliderStore.containsKey(groupName);
+    }
+
+    public void removeGroup(String groupName){
+        if(hasGroup(groupName)){
+            int size = getListItem(groupName).size();
+            int start = getStartGroupPosition(groupName);
+            buliderStore.remove(groupName);
+            notifyItemRangeRemoved(start, size);
+        }
+    }
+
+    public void removeGroup(int index){
+        this.removeGroup(""+index);
+    }
+
+    public int getGroupIndex(String groupName){
+        int index = -1;
+        for(int i=0; i<buliderStore.size(); i++){
+            if (buliderStore.containsKey(groupName)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private Object getItem(int position){
@@ -291,10 +324,23 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         }
     }
 
+    public int getStartGroupPosition(String groupName){
+        int totalCount = 0;
+
+        for(String key : buliderStore.getKeys()){
+            if(key.equals(groupName)){
+                break;
+            }
+            totalCount += ((AdapterBuilder)buliderStore.get(key)).getList().size();
+        }
+        return totalCount;
+    }
+
 
     private class ScrollDetector extends RecyclerView.OnScrollListener{
         private Store buliderStore;
         private OnLastScrollListener listener;
+        private String groupName = null;
 
         ScrollDetector(Store buliderStore){
             this.buliderStore = buliderStore;
@@ -307,19 +353,25 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             }
             return totalCount;
         }
-        void setOnLastScrollListener(OnLastScrollListener listener){
+        void setOnLastScrollListener(String groupName, OnLastScrollListener listener){
             this.listener = listener;
+            this.groupName = groupName;
         }
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             int lastPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-            Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+count());
+//            Log.e("dd", "last:"+((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()+" count:"+count());
             if(listener != null && lastPosition >= count()-1 && buliderStore.size() > 0){
                 Object[] values = buliderStore.getValues();
                 if(values.length > 0){
-                    List list = ((AdapterBuilder)values[values.length-1]).getList();
-                    if(list.size() > 0){
+                    List list;
+                    if(groupName == null){
+                        list = ((AdapterBuilder)values[values.length-1]).getList();
+                    }else{
+                        list = getListItem(groupName);
+                    }
+                    if(list!=null && list.size() > 0){
                         onLast(list.get(list.size()-1), list);
                         return;
 
@@ -332,7 +384,6 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         public void onLast(Object item, List<?> itemList)
         {
             listener.onLast(item, itemList);
-            Log.e("dd", "맨 밑이다");
 
         }
     }
