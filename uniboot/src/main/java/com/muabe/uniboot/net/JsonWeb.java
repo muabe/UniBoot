@@ -309,7 +309,12 @@ public class JsonWeb {
 
         String[] keys = getParamKeys();
         for (String key : keys) {
-            body.addFormDataPart(key, (String)param.get(key));
+            Object obj = param.get(key);
+            if(obj instanceof List){
+                body.addFormDataPart(key, convertCommaArray((List)obj));
+            }else {
+                body.addFormDataPart(key, (String) obj);
+            }
         }
 
         String[] fileKeys = getFileKeys();
@@ -592,6 +597,18 @@ public class JsonWeb {
         return this;
     }
 
+    /**
+     * 모든 param을 담은 HashMap을 넘김
+     * @param params
+     * @return
+     */
+    public JsonWeb addParams(HashMap<String, Object> params){
+        for(String key : params.keySet()){
+            this.param.put(key, params.get(key));
+        }
+        return this;
+    }
+
     public JsonWeb addParam(String key, String value) {
         param.put(key, value);
         return this;
@@ -738,6 +755,17 @@ public class JsonWeb {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Date.class, dateSerializer);
         return builder.create();
+    }
+
+    public static String convertCommaArray(List<String> param){
+        StringBuilder builder = new StringBuilder();
+        for(int i=0; i< param.size(); i++){
+            builder.append(param.get(i));
+            if(i < param.size()-1){
+                builder.append(",");
+            }
+        }
+        return builder.toString();
     }
 
 
