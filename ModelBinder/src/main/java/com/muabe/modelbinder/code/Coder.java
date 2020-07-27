@@ -94,7 +94,7 @@ public class Coder {
             }
 
             FieldSpec field = fieldBuilder
-                    .addModifiers(Modifier.PUBLIC)
+                    .addModifiers(Modifier.PROTECTED)
                     .addAnnotation(ClassName.get("androidx.databinding", "Bindable"))
                     .build();
 
