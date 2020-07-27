@@ -140,6 +140,9 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
     public int getItemSize(){
         Object[] values = buliderStore.getValues();
+        if(values == null){
+            return 0;
+        }
         int totalSize = 0;
         for(Object value : values){
             totalSize +=  ((AdapterBuilder)value).getList().size();
@@ -200,13 +203,14 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     }
 
     public int getGroupIndex(String groupName){
-        int index = -1;
-        for(int i=0; i<buliderStore.size(); i++){
-            if (buliderStore.containsKey(groupName)) {
-                return i;
+        int index = 0;
+        for(String key: buliderStore.getKeys()){
+            if(groupName.equals(key)){
+                return index;
             }
+            index++;
         }
-        return -1;
+        return index;
     }
 
     private Object getItem(int position){
