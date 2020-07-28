@@ -87,7 +87,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         holder.onPre();
     }
 
-    private AdapterBuilder getAdapter(String groupName){
+    public AdapterBuilder getAdapter(String groupName){
         if(isEmptyShow()){
             return emptyAdapterBuilder;
         }
