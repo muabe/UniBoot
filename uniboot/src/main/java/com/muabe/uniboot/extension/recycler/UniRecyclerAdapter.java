@@ -28,7 +28,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     protected Store buliderStore = new Store();
     protected ArrayList<Class> holderList = new ArrayList<>();
     final static String emptyHolderGroup = "uni_recycler_adapter_empty_hodler";
-    private AdapterBuilder emptyAdapterBuilder = null;
+    private GroupBuilder emptyGroupBuilder = null;
     protected RecyclerView recyclerView;
     private ScrollDetector scrollDetector;
 
@@ -82,16 +82,16 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         holder.setAdapter(this);
         holder.setItemList(getListItem(holder.getGroupName()));
         Mapper mapper = new Mapper(holder.binder.getRoot(), holder);
-        holder.param = getAdapter(holder.getGroupName()).getParam();
+        holder.param = getGroup(holder.getGroupName()).getParam();
         mapper.inject(new ParamAdapter(holder.param), new GetViewAdapter(), new OnClickAdapter(), new OnCheckedChangeAdapter());
         holder.onPre();
     }
 
-    public AdapterBuilder getAdapter(String groupName){
+    public GroupBuilder getGroup(String groupName){
         if(isEmptyShow()){
-            return emptyAdapterBuilder;
+            return emptyGroupBuilder;
         }
-        return ((AdapterBuilder)buliderStore.get(groupName));
+        return ((GroupBuilder)buliderStore.get(groupName));
     }
 
     private Object getInstance(ViewGroup parents, int viewType){
@@ -99,10 +99,10 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             LayoutInflater inflater = LayoutInflater.from(parents.getContext());
             Class<?> targetClass;
             if(viewType < 0){
-                if(emptyAdapterBuilder == null){
+                if(emptyGroupBuilder == null){
                     throw new RuntimeException("등록된 Holder class가 없습니다.");
                 }
-                targetClass = emptyAdapterBuilder.getHolderClass();
+                targetClass = emptyGroupBuilder.getHolderClass();
             }else{
                 targetClass = holderList.get(viewType);
             }
@@ -116,7 +116,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             if(viewType < 0) {
                 holder.setGroupName(emptyHolderGroup);
                 if(holder instanceof DefaultEmptyHolder){
-                    ((DefaultEmptyHolder)holder).initLayout(LayoutInflater.from(recyclerView.getContext()).inflate(emptyAdapterBuilder.layout, ((DefaultEmptyHolder)holder).binder.uniDefaultEmptyHolderLayout, false));
+                    ((DefaultEmptyHolder)holder).initLayout(LayoutInflater.from(recyclerView.getContext()).inflate(emptyGroupBuilder.layout, ((DefaultEmptyHolder)holder).binder.uniDefaultEmptyHolderLayout, false));
                 }
             }else{
                 holder.setGroupName(getBuilder(targetClass).getGroupName());
@@ -145,13 +145,13 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         }
         int totalSize = 0;
         for(Object value : values){
-            totalSize +=  ((AdapterBuilder)value).getList().size();
+            totalSize +=  ((GroupBuilder)value).getList().size();
         }
         return totalSize;
     }
 
     private boolean isEmptyShow(){
-        return getItemSize() == 0 && emptyAdapterBuilder != null;
+        return getItemSize() == 0 && emptyGroupBuilder != null;
     }
 
     @NotNull
@@ -160,7 +160,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         String[] keys = buliderStore.getKeys();
         int addSize = 0;
         for(String key : keys){
-            AdapterBuilder builder = (AdapterBuilder) buliderStore.get(key);
+            GroupBuilder builder = (GroupBuilder) buliderStore.get(key);
             if(position < addSize+builder.getList().size()){
                 Object item = builder.getList().get(position-addSize);
                 Class<? extends UniViewHolder<?, ?>> type = builder.getTypeListener().getType(item, position-addSize, builder.getList());
@@ -175,11 +175,11 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         return -1;
     }
 
-    private AdapterBuilder getBuilder(Class holderType){
+    private GroupBuilder getBuilder(Class holderType){
         Object[] builders = buliderStore.getValues();
         for(Object builder : builders){
-            if(((AdapterBuilder)builder).getHolderClass().toString().equals(holderType.toString())){
-                return (AdapterBuilder)builder;
+            if(((GroupBuilder)builder).getHolderClass().toString().equals(holderType.toString())){
+                return (GroupBuilder)builder;
             }
         }
         return null;
@@ -215,12 +215,12 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
     private Object getItem(int position){
         if(isEmptyShow()){
-            return emptyAdapterBuilder.getList().get(0);
+            return emptyGroupBuilder.getList().get(0);
         }else {
             String[] keys = buliderStore.getKeys();
             int addSize = 0;
             for (String key : keys) {
-                AdapterBuilder builder = (AdapterBuilder) buliderStore.get(key);
+                GroupBuilder builder = (GroupBuilder) buliderStore.get(key);
                 if (position < addSize + builder.getList().size()) {
                     return builder.getList().get(position - addSize);
                 }
@@ -237,7 +237,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             String[] keys = buliderStore.getKeys();
             int addSize = 0;
             for (String key : keys) {
-                AdapterBuilder builder = (AdapterBuilder) buliderStore.get(key);
+                GroupBuilder builder = (GroupBuilder) buliderStore.get(key);
                 if (adapterPosition < addSize + builder.getList().size()) {
                     return adapterPosition - addSize;
                 }
@@ -248,7 +248,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     }
 
     public List getListItem(String groupName){
-        return getAdapter(groupName).getList();
+        return getGroup(groupName).getList();
     }
 
     public List getListItem(int index){
@@ -269,50 +269,50 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
 
 
-    public AdapterBuilder addListItem(@NotNull String groupName, List list, @NotNull TypeListener<?> typeListener){
+    public GroupBuilder addListItem(@NotNull String groupName, List list, @NotNull TypeListener<?> typeListener){
         if(list == null){
             list = new ArrayList();
         }
-        AdapterBuilder builder = new AdapterBuilder(groupName, list, typeListener);
+        GroupBuilder builder = new GroupBuilder(groupName, list, typeListener);
         buliderStore.add(groupName, builder);
         return builder;
     }
 
-    public AdapterBuilder addListItem(List list, @NotNull TypeListener<?> typeListener){
+    public GroupBuilder addListItem(List list, @NotNull TypeListener<?> typeListener){
         String groupName = ""+buliderStore.size();
         return this.addListItem(groupName, list, typeListener);
     }
 
 
-    public AdapterBuilder addListItem(@NotNull String groupName, List list, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
+    public GroupBuilder addListItem(@NotNull String groupName, List list, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
         return this.addListItem(groupName, list, new SingleTypeListener(holderClass));
     }
 
-    public AdapterBuilder addListItem(List list, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
+    public GroupBuilder addListItem(List list, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
         String groupName = ""+buliderStore.size();
         return this.addListItem(groupName, list, holderClass);
     }
 
-    public AdapterBuilder addSingleItem(@NotNull String groupName, Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
+    public GroupBuilder addSingleItem(@NotNull String groupName, Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
         ArrayList list = new ArrayList();
         list.add(item);
         return this.addListItem(groupName, list, holderClass);
     }
 
-    public AdapterBuilder addSingleItem(Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
+    public GroupBuilder addSingleItem(Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
         String groupName = ""+buliderStore.size();
         return this.addSingleItem(groupName, item, holderClass);
     }
 
-    public AdapterBuilder setEmptyItem(Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
+    public GroupBuilder setEmptyItem(Object item, @NotNull Class<? extends UniViewHolder<?, ?>> holderClass){
         ArrayList list = new ArrayList();
         list.add(item);
-        this.emptyAdapterBuilder = new AdapterBuilder(emptyHolderGroup, list, new SingleTypeListener(holderClass));
-        this.emptyAdapterBuilder.setHolderClass(holderClass);
-        return this.emptyAdapterBuilder;
+        this.emptyGroupBuilder = new GroupBuilder(emptyHolderGroup, list, new SingleTypeListener(holderClass));
+        this.emptyGroupBuilder.setHolderClass(holderClass);
+        return this.emptyGroupBuilder;
     }
 
-    public AdapterBuilder setEmptyItem(int layoutId){
+    public GroupBuilder setEmptyItem(int layoutId){
         return setEmptyItem(null, DefaultEmptyHolder.class).setEmptyLayout(layoutId);
     }
 
@@ -335,7 +335,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             if(key.equals(groupName)){
                 break;
             }
-            totalCount += ((AdapterBuilder)buliderStore.get(key)).getList().size();
+            totalCount += ((GroupBuilder)buliderStore.get(key)).getList().size();
         }
         return totalCount;
     }
@@ -353,7 +353,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         private int count(){
             int totalCount = 0;
             for(Object b : buliderStore.getValues()){
-                totalCount += ((AdapterBuilder)b).getList().size();
+                totalCount += ((GroupBuilder)b).getList().size();
             }
             return totalCount;
         }
@@ -371,7 +371,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
                 if(values.length > 0){
                     List list;
                     if(groupName == null){
-                        list = ((AdapterBuilder)values[values.length-1]).getList();
+                        list = ((GroupBuilder)values[values.length-1]).getList();
                     }else{
                         list = getListItem(groupName);
                     }
@@ -396,7 +396,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         boolean onLast(ItemType item, @NotNull List<ItemType> itemList);
     }
 
-    public class AdapterBuilder{
+    public class GroupBuilder{
         private Store param = new Store();
         private String groupName;
         private List list;
@@ -404,19 +404,19 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         private TypeListener<?> typeListener;
         private View emptyView;
 
-        public AdapterBuilder(String groupName, List list, TypeListener<?> typeListener){
+        public GroupBuilder(String groupName, List list, TypeListener<?> typeListener){
             this.groupName = groupName;
             this.list = list;
             this.typeListener = typeListener;
         }
 
-        AdapterBuilder setEmptyView(View view){
+        GroupBuilder setEmptyView(View view){
             this.emptyView = view;
             return this;
         }
 
         public int layout;
-        AdapterBuilder setEmptyLayout(int layout){
+        GroupBuilder setEmptyLayout(int layout){
             this.layout = layout;
             return this;
         }
@@ -449,7 +449,7 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
             return typeListener;
         }
 
-        public AdapterBuilder addParam(String key, Object value){
+        public GroupBuilder addParam(String key, Object value){
             param.add(key, value);
             return this;
         }

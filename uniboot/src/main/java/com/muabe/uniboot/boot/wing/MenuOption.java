@@ -11,6 +11,7 @@ package com.muabe.uniboot.boot.wing;
 public interface MenuOption {
     int getWidth();
     void setEnable(boolean enable);
+    void enableSideDrag(boolean enable);
     void setWidth(int width);
     void open();
     boolean isOpened();

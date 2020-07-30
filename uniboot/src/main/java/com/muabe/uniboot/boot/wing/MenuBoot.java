@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.markjmind.propose.Motion;
 import com.markjmind.propose.Propose;
 import com.markjmind.propose.listener.MotionListener;
@@ -13,8 +15,6 @@ import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.muabe.uniboot.R;
-
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * Created by MarkJ on 2016-10-29.
@@ -191,10 +191,18 @@ public class MenuBoot extends UniBoot {
                 touch.setVisibility(View.VISIBLE);
                 menu.setVisibility(View.VISIBLE);
                 animationInfo = new AnimationInfo(isLeft);
-                touch.setOnTouchListener(animationInfo.propose);
             }else{
                 touch.setVisibility(View.GONE);
                 menu.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void enableSideDrag(boolean enable){
+            if(enable) {
+                touch.setOnTouchListener(animationInfo.propose);
+            }else{
+                touch.setOnTouchListener(null);
             }
         }
 
