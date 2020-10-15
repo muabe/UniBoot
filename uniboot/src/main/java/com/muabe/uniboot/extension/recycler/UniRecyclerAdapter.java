@@ -248,7 +248,11 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
     }
 
     public List getListItem(String groupName){
-        return getGroup(groupName).getList();
+        if(getGroup(groupName) != null) {
+            return getGroup(groupName).getList();
+        }else{
+            return null;
+        }
     }
 
     public List getListItem(int index){
