@@ -202,6 +202,16 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
         this.removeGroup(""+index);
     }
 
+    public void removeGroupAll(){
+        int totalCount = 0;
+
+        for(String key : buliderStore.getKeys()){
+            totalCount += ((GroupBuilder)buliderStore.get(key)).getList().size();
+        }
+        notifyItemRangeRemoved(0, totalCount);
+        buliderStore.clear();
+    }
+
     public int getGroupIndex(String groupName){
         int index = 0;
         for(String key: buliderStore.getKeys()){
@@ -356,6 +366,9 @@ public class UniRecyclerAdapter extends RecyclerView.Adapter<UniViewHolder<?, ?>
 
         private int count(){
             int totalCount = 0;
+            if(buliderStore.getValues() == null){
+                return 0;
+            }
             for(Object b : buliderStore.getValues()){
                 totalCount += ((GroupBuilder)b).getList().size();
             }
