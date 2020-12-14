@@ -32,6 +32,13 @@ public class JwPreference {
         this.preferenceName = getClass().getName();
     }
 
+    public void remove(String key){
+        SharedPreferences prefs = context.getSharedPreferences(preferenceName, preferenceMode);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(key);
+        editor.commit();
+    }
+
     public void setString(String key, String value){
         SharedPreferences prefs = context.getSharedPreferences(preferenceName, preferenceMode);
         SharedPreferences.Editor editor = prefs.edit();
