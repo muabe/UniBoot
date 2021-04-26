@@ -312,8 +312,15 @@ public class DateTimeUtil {
 	 */
 	public static String getFormatString(Date date, String pattern) {
 		java.text.SimpleDateFormat formatter =
-				new java.text.SimpleDateFormat(pattern, java.util.Locale.KOREA);
+				new java.text.SimpleDateFormat(pattern);
 		String dateString = formatter.format(date);
+		return dateString;
+	}
+
+	public static String getFormatString(long date, String pattern) {
+		java.text.SimpleDateFormat formatter =
+				new java.text.SimpleDateFormat(pattern);
+		String dateString = formatter.format(new Date(date));
 		return dateString;
 	}
 
